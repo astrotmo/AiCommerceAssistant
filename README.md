@@ -1,146 +1,102 @@
-# AICA - AI Commerce Assistant (Shopware 6 Plugin)
+# AICA – AI Commerce Assistant
 
-A lightweight Shopware 6 plugin that adds a floating AICA widget to the storefront. It provides a configurable chat UI (via iFrame) plus helpful API endpoints for context tokens, price lookups, and a contact form.
+AICA is a Shopware 6 storefront plugin that integrates an AI-based commerce assistant into the storefront. It renders a floating chat widget, routes browser requests through Shopware, and keeps commerce-specific concerns such as context, pricing, contact escalation, tracking, and administration analytics inside Shopware.
 
-> Note: The initial defaults in the plugin configuration are German (for example, the welcome message and button label). You can override all labels and texts in the Shopware admin.
+## Key features
 
-## Features
+- Floating storefront chat widget
+- Shopware-controlled chat proxy endpoint at `/aica/chat`
+- Context-token handling through `/aica/context-token`
+- Structured AI response rendering for text, product lists, info boxes, and forms
+- Product suggestion rendering in the storefront widget
+- Optional Shopware price enrichment through `/aica/prices`
+- Contact escalation form through `/aica/contact`
+- Chat/contact tracking and administration analytics dashboard
 
-- Floating chat widget in the storefront (via iFrame)
-- Configurable welcome message, button label, and position
-- Support for multiple LLM models (selectable in plugin config)
-- API endpoints:
-  - JWT context token for the chat
-  - Price lookup for logged-in customers
-  - Contact form with email delivery
+## Architecture
+
+The browser calls Shopware storefront routes under `/aica/...`. Shopware validates and enriches requests, forwards chat payloads to an external AI backend configured through the plugin settings, and handles price lookup, contact mails, tracking, persistence, and administration analytics locally.
+
+See [docs/architecture.md](docs/architecture.md) for a fuller implementation overview.
 
 ## Requirements
 
-- Shopware **6.7.x**
-- Configured mail delivery in Shopware (for the contact form)
-- A chat UI (web app) that can be embedded via iFrame
-- Environment variable `CHAT_AUTH_SECRET` for JWT signing
+- Shopware core `~6.7.0` as declared in `composer.json`
+- PHP version compatible with the installed Shopware 6.7 project; this plugin does not declare an additional PHP constraint
+- A reachable external AI backend for the configured chat backend URL
+- `CHAT_AUTH_SECRET` environment variable for context-token signing
+- Shopware mail delivery configured if the contact escalation form should send emails
+- Node/npm tooling compatible with your Shopware installation when rebuilding storefront or administration assets
 
-## Installation
+## Quick installation
 
-1. Copy the plugin into the Shopware plugin directory:
-   ```bash
-   custom/plugins/AiCommerceAssistant
-   ```
-2. Install and activate the plugin in the Shopware administration.
+From the Shopware project root:
+
+```bash
+git clone <repository-url> custom/plugins/AiCommerceAssistant
+composer dump-autoload
+bin/console plugin:refresh
+bin/console plugin:install --activate AiCommerceAssistant
+bin/console cache:clear
+```
+
+When assets need to be rebuilt, use the commands provided by your Shopware project, commonly:
+
+```bash
+bin/build-storefront.sh
+bin/build-administration.sh
+bin/console theme:compile
+```
+
+Paths and build commands can differ between Shopware installations.
+
+## Quick update
+
+From the Shopware project root:
+
+```bash
+cd custom/plugins/AiCommerceAssistant
+git pull
+cd ../../..
+composer dump-autoload
+bin/console plugin:refresh
+bin/console plugin:update AiCommerceAssistant
+bin/console cache:clear
+```
+
+Rebuild storefront, administration, and theme assets when JavaScript, SCSS, Twig, or administration files changed.
 
 ## Configuration
 
-In the Shopware admin under **Settings → Plugins → AICA - AI Commerce Assistant**:
+Configure AICA in the Shopware Administration plugin configuration for `AICA - AI Commerce Assistant`.
 
-- **Chat server URL (iframe)**: URL of the chat UI (e.g., `https://your-chat-app.example/chat`)
-- **Ollama model**: Select from the available models
-- **Welcome message**: Greeting text shown in the widget
-- **Auto-open on first visit?**: Automatically open the widget
-- **Button label**: Label for the chat button
-- **Position**: `bottom-right` or `bottom-left`
+Available settings include:
 
-Additionally, set the environment variable `CHAT_AUTH_SECRET` (e.g., in the Shopware container), so the context-token endpoint can sign JWTs.
+- Chat backend URL
+- Ollama model
+- Welcome message
+- Button and window title
+- Auto-open behavior
+- Widget position
+- Product price visibility and price source mode
+- Price explanation hint
+- Contact recipient email
+- Customer confirmation mail
+- Contact mail sender name override
+- Debug and privacy options for console logs, raw debug payloads, raw IP storage, and contact mail status logging
 
-## Storefront Integration
+The corresponding system config keys use the `AiCommerceAssistant.config.*` domain. See [docs/configuration.md](docs/configuration.md) for the complete setting list.
 
-The plugin adds the configuration to the storefront page extension `aica`. The following values are exposed to the frontend:
+## Documentation
 
-- `chatUrl`
-- `llmModel`
-- `welcomeMessage`
-- `autoOpen`
-- `buttonLabel`
-- `position`
+- [Installation](docs/installation.md)
+- [Configuration](docs/configuration.md)
+- [Architecture](docs/architecture.md)
+- [Development](docs/development.md)
+- [Troubleshooting](docs/troubleshooting.md)
 
-## API Endpoints
-
-### Context Token
-
-`GET /aica/context-token`
-
-Response:
-```json
-{ "token": "<jwt>" }
-```
-
-- The JWT includes `salesChannelId`, `loggedIn`, and (if present) the customer ID.
-- The JWT includes `sid` (storefront chat session identifier) and `salesChannelId`.
-- Token validity is **60 seconds**.
-- Requires the `CHAT_AUTH_SECRET` environment variable.
-
-### Tracking (Shopware-side persistence hook)
-
-`POST /aica/track`
-
-Request (example):
-```json
-{
-  "event": "message",
-  "role": "assistant",
-  "messageIndex": 2,
-  "payload": { "blocks": [] }
-}
-```
-
-### Price Lookup (logged-in customers only)
-
-`POST /aica/prices`
-
-Request:
-```json
-{ "productIds": ["<product-id>", "<product-id>"] }
-```
-
-Response (excerpt):
-```json
-{
-  "prices": {
-    "<product-id>": {
-      "name": "Product name",
-      "calculatedPrice": {
-        "unitPrice": 99.0,
-        "totalPrice": 99.0,
-        "listPrice": null,
-        "regulationPrice": null
-      },
-      "calculatedPrices": [
-        {
-          "unitPrice": 90.0,
-          "totalPrice": 90.0,
-          "quantity": 10,
-          "listPrice": null
-        }
-      ],
-      "hasAdvancedPrices": true
-    }
-  }
-}
-```
-
-### Contact Form
-
-`POST /aica/contact`
-
-Request (JSON or form-data):
-```json
-{
-  "name": "Max Mustermann",
-  "email": "max@example.com",
-  "phone": "+49 123 456",
-  "company": "Example GmbH",
-  "message": "I have a question...",
-  "productRef": "SKU-123",
-  "quantity": "10",
-  "deliveryZip": "10115"
-}
-```
-
-Response:
-```json
-{ "success": true }
-```
+Additional generated reference files may exist in `docs/` depending on the repository checkout.
 
 ## License
 
-MIT
+AICA is released under the [MIT License](LICENSE).

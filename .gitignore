@@ -5,6 +5,8 @@
 /src/Resources/app/storefront/dist/
 /src/Resources/public/
 /vendor
-/docs
+/docs/*
+!/docs/
+!/docs/*.md
 
 phpunit.xml
