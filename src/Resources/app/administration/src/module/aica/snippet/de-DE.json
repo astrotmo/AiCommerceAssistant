@@ -1,0 +1,290 @@
+{
+    "aica": {
+        "general": {
+            "mainMenuItemGeneral": "AICA",
+            "descriptionTextModule": "Gespeicherte Storefront-AICA-Sitzungen durchsuchen und prüfen.",
+            "errorTitle": "AICA",
+            "na": "k. A.",
+            "yes": "Ja",
+            "no": "Nein",
+            "guest": "Gast",
+            "customer": "Kunde"
+        },
+        "config": {
+            "dashboardHint": "Benötigst du Analytics oder Chat-Historie-Werkzeuge?",
+            "openDashboard": "AICA-Dashboard öffnen"
+        },
+        "list": {
+            "title": "AICA-Sitzungen",
+            "tableTitle": "Gespeicherte Sitzungen",
+            "actions": {
+                "openDetail": "Sitzung öffnen"
+            },
+            "columns": {
+                "createdAt": "Start",
+                "lastActivity": "Letzte Aktivität",
+                "participant": "Teilnehmer",
+                "messageCount": "Nachrichten",
+                "totalTokens": "Token",
+                "model": "Modell",
+                "contactSubmitted": "Kontaktformular gesendet",
+                "debug": "Debug",
+                "averageLatency": "Ø Latenz",
+                "guestFingerprint": "Gast-Fingerprint"
+            },
+            "filters": {
+                "title": "Filter",
+                "searchTerm": "Suche",
+                "searchPlaceholder": "Kundenname/-mail, Nachrichtentext, Sitzungsreferenz",
+                "dateFrom": "Von",
+                "dateTo": "Bis",
+                "customerType": "Kundentyp",
+                "customerTypeAll": "Alle",
+                "customerTypeCustomer": "Eingeloggte Kunden",
+                "customerTypeGuest": "Gäste",
+                "contactSubmitted": "Kontaktformular",
+                "contactAll": "Alle",
+                "contactYes": "Gesendet",
+                "contactNo": "Nicht gesendet",
+                "debugOnly": "Nur Debug-Sitzungen",
+                "apply": "Filter anwenden",
+                "reset": "Zurücksetzen"
+            },
+            "errors": {
+                "loadSessions": "Sitzungen konnten nicht geladen werden."
+            },
+            "empty": {
+                "title": "Keine Chat-Sitzungen",
+                "description": "Für die aktuellen Filter wurden keine Sitzungen gefunden."
+            }
+        },
+        "detail": {
+            "title": "Chat-Sitzung",
+            "actions": {
+                "backToList": "Zur Liste"
+            },
+            "empty": {
+                "title": "Sitzung nicht verfügbar",
+                "description": "Die angeforderte Chat-Sitzung konnte nicht geladen werden."
+            },
+            "roles": {
+                "user": "Nutzer",
+                "assistant": "Assistent",
+                "system": "System",
+                "tool": "Tool"
+            },
+            "metadata": {
+                "title": "Metadaten",
+                "sessionId": "Sitzungs-ID",
+                "participant": "Teilnehmer",
+                "customerId": "Kunden-ID",
+                "createdAt": "Erstellt",
+                "firstMessageAt": "Erste Nachricht",
+                "lastMessageAt": "Letzte Nachricht",
+                "model": "Modell",
+                "totalMessageCount": "Nachrichten gesamt",
+                "totalTokens": "Token gesamt",
+                "averageLatency": "Durchschnittliche Latenz",
+                "contactShown": "Kontaktformular angezeigt",
+                "contactSubmitted": "Kontaktformular gesendet",
+                "salesChannel": "Verkaufskanal",
+                "language": "Sprache",
+                "storefrontSessionIdentifier": "Storefront-Sitzungskennung",
+                "guestFingerprint": "Gast-Fingerprint",
+                "hashedIp": "Gehashte IP",
+                "hashedUserAgent": "Gehashter User-Agent"
+            },
+            "messages": {
+                "title": "Konversation",
+                "empty": "Für diese Sitzung wurden keine Nachrichten gespeichert.",
+                "model": "Modell",
+                "tokens": "Token",
+                "latency": "Latenz"
+            },
+            "products": {
+                "title": "Produktreferenzen",
+                "userMentions": "Vom Nutzer erwähnte Produkte",
+                "assistantResults": "Vom Assistenten/Tool gelieferte Produkte",
+                "otherSources": "Weitere Quellen",
+                "noUserMentions": "Keine Produktreferenzen vom Nutzer.",
+                "noAssistantResults": "Keine Produktreferenzen vom Assistenten/Tool."
+            },
+            "contact": {
+                "title": "Kontaktformular-Einsendungen",
+                "target": "Mail-Ziel",
+                "confirmation": "Bestätigungsmail",
+                "internal": "Interne Benachrichtigung"
+            },
+            "blocks": {
+                "formular": "Kontaktformular"
+            },
+            "debug": {
+                "title": "Debug",
+                "messagePayload": "Gespeicherte Debug-Nutzlast",
+                "debugEnabledSnapshot": "Debug-Modus Snapshot",
+                "storeRawDebugPayloadsSnapshot": "Raw-Payload-Speicherung Snapshot",
+                "rawIp": "Rohe IP",
+                "userAgentRaw": "Roher User-Agent"
+            },
+            "errors": {
+                "loadSession": "Die Details der Chat-Sitzung konnten nicht geladen werden."
+            }
+        },
+        "contactList": {
+            "title": "Kontaktanfragen",
+            "tableTitle": "Gespeicherte Einsendungen",
+            "actions": {
+                "openDetail": "Einsendung öffnen"
+            },
+            "columns": {
+                "createdAt": "Erstellt",
+                "sender": "Absender",
+                "customer": "Kunde",
+                "session": "Sitzung",
+                "internalStatus": "Interne Mail",
+                "confirmationStatus": "Bestätigungsmail",
+                "target": "Zieladresse"
+            },
+            "filters": {
+                "title": "Filter",
+                "searchTerm": "Suche",
+                "searchPlaceholder": "Name, E-Mail, Nachricht, Sitzungs-ID, Kunde",
+                "dateFrom": "Von",
+                "dateTo": "Bis",
+                "hasSession": "Sitzung verknüpft",
+                "hasSessionAll": "Alle",
+                "hasSessionYes": "Mit Sitzung verknüpft",
+                "hasSessionNo": "Ohne Sitzungsverknüpfung",
+                "internalStatus": "Status interne Mail",
+                "confirmationStatus": "Status Bestätigungsmail",
+                "statusAll": "Alle",
+                "statusSent": "Gesendet",
+                "statusFailed": "Fehlgeschlagen",
+                "statusNotAttempted": "Nicht versucht",
+                "apply": "Filter anwenden",
+                "reset": "Zurücksetzen"
+            },
+            "status": {
+                "sent": "Gesendet",
+                "failed": "Fehlgeschlagen",
+                "notAttempted": "Nicht versucht"
+            },
+            "errors": {
+                "loadSubmissions": "Kontaktanfragen konnten nicht geladen werden."
+            },
+            "empty": {
+                "title": "Keine Kontaktanfragen",
+                "description": "Für die aktuellen Filter wurden keine Kontaktanfragen gefunden."
+            }
+        },
+        "contactDetail": {
+            "title": "Kontaktanfrage",
+            "actions": {
+                "backToList": "Zur Liste",
+                "openSession": "Chat-Sitzung öffnen"
+            },
+            "empty": {
+                "title": "Einsendung nicht verfügbar",
+                "description": "Die angeforderte Kontaktanfrage konnte nicht geladen werden."
+            },
+            "metadata": {
+                "title": "Einsendungs-Metadaten",
+                "id": "Einsendungs-ID",
+                "createdAt": "Erstellt",
+                "sender": "Name",
+                "email": "E-Mail",
+                "phone": "Telefon",
+                "company": "Firma",
+                "customer": "Kunde",
+                "session": "Chat-Sitzung",
+                "sourceContext": "Kontext / Grund",
+                "productReference": "Produktbezug",
+                "target": "Internes Ziel"
+            },
+            "mailStatus": {
+                "title": "Mail-Status",
+                "internal": "Interne Benachrichtigung",
+                "confirmation": "Kundenbestätigung"
+            },
+            "message": {
+                "title": "Gesendete Nachricht"
+            },
+            "errors": {
+                "loadSubmission": "Die Details der Kontaktanfrage konnten nicht geladen werden."
+            }
+        },
+        "dashboard": {
+            "title": "AICA-Dashboard",
+            "general": {
+                "unavailable": "Nicht verfügbar"
+            },
+            "filters": {
+                "title": "Zeitraum",
+                "preset": "Zeitraum-Vorlage",
+                "presetToday": "Heute",
+                "presetLast7": "Letzte 7 Tage",
+                "presetLast30": "Letzte 30 Tage",
+                "presetMonth": "Aktueller Monat",
+                "presetCustom": "Benutzerdefiniert",
+                "dateFrom": "Von",
+                "dateTo": "Bis",
+                "range": "Ausgewählter Zeitraum",
+                "noRange": "Kein gültiger Zeitraum ausgewählt.",
+                "apply": "Anwenden",
+                "reset": "Zurücksetzen"
+            },
+            "metrics": {
+                "totalChats": "Chats gesamt",
+                "sessionsInRange": "Sitzungen im ausgewählten Zeitraum",
+                "totalTokens": "Token-Verbrauch gesamt",
+                "tokensUnavailableInfo": "Für diesen Zeitraum sind keine Token-Daten verfügbar.",
+                "input": "Input",
+                "output": "Output",
+                "averageLatency": "Durchschnittliche Antwortlatenz",
+                "latencyUnavailableInfo": "Für diesen Zeitraum sind keine Latenz-Daten verfügbar.",
+                "samples": "Latenz-Stichproben",
+                "contactSubmissions": "Kontaktanfragen",
+                "contactsInRange": "Gespeicherte Kontaktanfragen im ausgewählten Zeitraum"
+            },
+            "products": {
+                "assistantTitle": "Top-Produktreferenzen Assistent/Tool",
+                "assistantEmpty": "Keine Produktreferenzen aus Assistent/Tool in diesem Zeitraum.",
+                "userTitle": "Top-Produktreferenzen Nutzer/Kontakt",
+                "userEmpty": "Keine Produktreferenzen aus Nutzer/Kontakt in diesem Zeitraum.",
+                "sourceAssistant": "Assistent/Tool",
+                "sourceUser": "Nutzer/Kontakt",
+                "sourceOther": "Andere Quelle"
+            },
+            "export": {
+                "title": "CSV-Export",
+                "info": "Die Exporte werden auf den aktuell ausgewählten Zeitraum begrenzt.",
+                "sessions": "Sitzungen exportieren",
+                "contacts": "Kontaktanfragen exportieren",
+                "messages": "Nachrichten exportieren",
+                "success": "CSV-Export wurde erfolgreich erstellt.",
+                "error": "CSV-Export konnte nicht erstellt werden."
+            },
+            "delete": {
+                "title": "Manuelle Datenlöschung",
+                "info": "Die Löschung erfolgt manuell und dauerhaft. Es gibt keine automatische Bereinigung.",
+                "sessionsAction": "Sitzungen + verknüpfte Daten löschen",
+                "contactsAction": "Kontaktanfragen löschen",
+                "sessionsTitle": "Sitzungen löschen",
+                "contactsTitle": "Kontaktanfragen löschen",
+                "confirmText": "Diese Aktion löscht Daten im ausgewählten Zeitraum dauerhaft. Tippe DELETE zur Bestätigung.",
+                "confirmLabel": "Bestätigung",
+                "confirmPlaceholder": "DELETE eingeben",
+                "cancel": "Abbrechen",
+                "confirmAction": "Dauerhaft löschen",
+                "sessionsDeleted": "Gelöschte Sitzungen",
+                "relatedMessages": "verknüpfte Nachrichten",
+                "contactsDeleted": "Gelöschte Kontaktanfragen",
+                "noPermission": "Du hast keine Berechtigung zum Löschen von Chat-Daten.",
+                "error": "Löschen fehlgeschlagen. Bitte Berechtigungen prüfen und erneut versuchen."
+            },
+            "errors": {
+                "loadOverview": "Dashboard-Statistiken konnten nicht geladen werden."
+            }
+        }
+    }
+}

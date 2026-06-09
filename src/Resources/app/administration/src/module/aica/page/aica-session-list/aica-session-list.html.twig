@@ -1,0 +1,175 @@
+<sw-page class="aica-session-list">
+    <template #smart-bar-header>
+        <h2>
+            {{ $tc('aica.list.title') }}
+            <span v-if="!isLoading" class="sw-page__smart-bar-amount">
+                ({{ total }})
+            </span>
+        </h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <mt-button
+            variant="secondary"
+            size="default"
+            @click="resetFilters"
+        >
+            {{ $tc('aica.list.filters.reset') }}
+        </mt-button>
+
+        <mt-button
+            variant="primary"
+            size="default"
+            @click="applyFilters"
+        >
+            {{ $tc('aica.list.filters.apply') }}
+        </mt-button>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+            <sw-card :title="$tc('aica.list.filters.title')">
+                <sw-container
+                    class="aica-session-list__filters"
+                    columns="repeat(auto-fit, minmax(220px, 1fr))"
+                    gap="16px"
+                >
+                    <mt-text-field
+                        v-model="filters.searchTerm"
+                        :label="$tc('aica.list.filters.searchTerm')"
+                        :placeholder="$tc('aica.list.filters.searchPlaceholder')"
+                        @keydown.enter.prevent="applyFilters"
+                    />
+
+                    <mt-datepicker
+                        :model-value="filters.dateFrom"
+                        type="date"
+                        :label="$tc('aica.list.filters.dateFrom')"
+                        :placeholder="$tc('sw-datepicker.date.placeholder')"
+                        @update:model-value="onDateFromChange"
+                    />
+
+                    <mt-datepicker
+                        :model-value="filters.dateTo"
+                        type="date"
+                        :label="$tc('aica.list.filters.dateTo')"
+                        :placeholder="$tc('sw-datepicker.date.placeholder')"
+                        @update:model-value="onDateToChange"
+                    />
+
+                    <sw-single-select
+                        :value="filters.customerType"
+                        :label="$tc('aica.list.filters.customerType')"
+                        :options="customerTypeOptions"
+                        label-property="label"
+                        value-property="value"
+                        @update:value="onCustomerTypeChange"
+                    />
+
+                    <sw-single-select
+                        :value="filters.contactSubmitted"
+                        :label="$tc('aica.list.filters.contactSubmitted')"
+                        :options="contactSubmittedOptions"
+                        label-property="label"
+                        value-property="value"
+                        @update:value="onContactSubmittedChange"
+                    />
+
+                    <mt-switch
+                        v-model="filters.debugOnly"
+                        :label="$tc('aica.list.filters.debugOnly')"
+                    />
+                </sw-container>
+            </sw-card>
+
+            <sw-card :title="$tc('aica.list.tableTitle')">
+                <mt-empty-state
+                    v-if="!isLoading && total === 0"
+                    icon="regular-comments"
+                    :headline="$tc('aica.list.empty.title')"
+                    :description="$tc('aica.list.empty.description')"
+                />
+
+                <sw-entity-listing
+                    v-else
+                    :items="sessions"
+                    :columns="columns"
+                    :repository="sessionRepository"
+                    :show-selection="false"
+                    :allow-edit="false"
+                    :allow-delete="false"
+                    :is-loading="isLoading"
+                    :sort-by="sortBy"
+                    :sort-direction="sortDirection"
+                    :disable-data-fetching="true"
+                    detail-route="aica.detail"
+                    identifier="aica-session-list"
+                    @column-sort="onSortColumn"
+                    @page-change="onPageChange"
+                >
+                    <template #column-createdAt="{ item }">
+                        <router-link
+                            class="aica-session-list__route-link"
+                            :to="{ name: 'aica.detail', params: { id: item.id } }"
+                        >
+                            {{ formatDate(item.createdAt) }}
+                        </router-link>
+                    </template>
+
+                    <template #column-lastMessageAt="{ item }">
+                        {{ formatDate(item.lastMessageAt || item.updatedAt || item.createdAt) }}
+                    </template>
+
+                    <template #column-participant="{ item }">
+                        <div class="aica-session-list__participant">
+                            <div class="aica-session-list__participant-main">
+                                {{ getParticipantLabel(item) }}
+                            </div>
+                            <div class="aica-session-list__participant-sub">
+                                {{ getParticipantSubline(item) }}
+                            </div>
+                        </div>
+                    </template>
+
+                    <template #column-totalTokens="{ item }">
+                        {{ formatTokens(item.totalTokens) }}
+                    </template>
+
+                    <template #column-modelName="{ item }">
+                        {{ item.modelName || $tc('aica.general.na') }}
+                    </template>
+
+                    <template #column-contactFormSubmitted="{ item }">
+                        <sw-label
+                            class="aica-session-list__status-label"
+                            size="small"
+                            appearance="pill"
+                        >
+                            {{ item.contactFormSubmitted ? $tc('aica.general.yes') : $tc('aica.general.no') }}
+                        </sw-label>
+                    </template>
+
+                    <template #column-debug="{ item }">
+                        <sw-label
+                            class="aica-session-list__status-label"
+                            size="small"
+                            appearance="pill"
+                        >
+                            {{ hasDebugData(item) ? $tc('aica.general.yes') : $tc('aica.general.no') }}
+                        </sw-label>
+                    </template>
+
+                    <template #column-averageResponseLatencyMs="{ item }">
+                        {{ formatLatency(item.averageResponseLatencyMs) }}
+                    </template>
+
+                    <template #actions="{ item }">
+                        <sw-context-menu-item @click="toDetail(item.id)">
+                            {{ $tc('aica.list.actions.openDetail') }}
+                        </sw-context-menu-item>
+                    </template>
+                </sw-entity-listing>
+            </sw-card>
+        </sw-card-view>
+    </template>
+</sw-page>

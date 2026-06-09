@@ -1,0 +1,62 @@
+.aica-contact-detail {
+    .aica-contact-detail__layout {
+        align-items: start;
+    }
+
+    .aica-contact-detail__meta-grid {
+        display: grid;
+        gap: 10px;
+    }
+
+    .aica-contact-detail__meta-row {
+        display: grid;
+        gap: 4px;
+    }
+
+    .aica-contact-detail__meta-row dt {
+        color: var(--color-gray-500);
+        font-size: 12px;
+    }
+
+    .aica-contact-detail__meta-row dd {
+        margin: 0;
+        word-break: break-word;
+    }
+
+    .aica-contact-detail__meta-sub {
+        margin-top: 2px;
+        color: var(--color-gray-500);
+        font-size: 12px;
+    }
+
+    .aica-contact-detail__status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .aica-contact-detail__error {
+        margin: -4px 0 12px;
+        color: var(--color-crimson-500);
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .aica-contact-detail__route-link {
+        color: var(--color-shopware-brand-500);
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .aica-contact-detail__message {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: var(--font-family-default);
+    }
+}

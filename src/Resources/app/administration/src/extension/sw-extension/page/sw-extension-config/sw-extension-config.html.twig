@@ -1,0 +1,80 @@
+{% block sw_extension_config %}
+<sw-meteor-page
+    class="sw-extension-config"
+    :from-link="fromLink"
+>
+    <template #smart-bar-icon>
+        <sw-extension-icon
+            class="sw-extension-config__extension-icon"
+            :src="image"
+            :alt="$tc('sw-extension-store.component.sw-extension-config.imageDescription', { extensionName: extensionLabel}, 0)"
+        />
+    </template>
+
+    <template #smart-bar-header>
+        {{ extensionLabel }}
+    </template>
+
+    <template
+        v-if="extension"
+        #smart-bar-header-meta
+    >
+        <span v-if="extension.producerWebsite && extension.producerName">
+            {{ $tc('sw-extension-store.component.sw-extension-config.labelBy') }}
+
+            <sw-external-link
+                small
+                :href="extension.producerWebsite"
+                class="sw-extension-config__producer-link"
+            >
+                {{ extension.producerName }}
+            </sw-external-link>
+        </span>
+
+        <span v-else-if="extension.producerName">
+            {{ $tc('sw-extension-store.component.sw-extension-config.labelBy') }} {{ extension.producerName }}
+        </span>
+    </template>
+
+    <template #smart-bar-actions>
+        <mt-button
+            variant="primary"
+            class="sw-extension-config__save-action"
+            size="default"
+            @click.prevent="onSave"
+        >
+            {{ $tc('global.default.save') }}
+        </mt-button>
+    </template>
+
+    <template #default>
+        <div
+            class="aica-config__content"
+            :class="{ 'is--boxed': isAicaConfig }"
+        >
+            <mt-banner
+                v-if="isAicaConfig"
+                variant="info"
+                class="aica-config__dashboard-banner"
+            >
+                <span>{{ $tc('aica.config.dashboardHint') }}</span>
+                <sw-internal-link
+                    class="aica-config__dashboard-link"
+                    :router-link="aicaDashboardRoute"
+                    inline
+                    hide-icon
+                >
+                    {{ $tc('aica.config.openDashboard') }}
+                </sw-internal-link>
+            </mt-banner>
+
+            <sw-system-config
+                ref="systemConfig"
+                :domain="domain"
+                sales-channel-switchable
+                :sales-channel-id="salesChannelId"
+            />
+        </div>
+    </template>
+</sw-meteor-page>
+{% endblock %}

@@ -1,0 +1,32 @@
+.aica-contact-list {
+    .aica-contact-list__filters {
+        margin-bottom: 4px;
+    }
+
+    .aica-contact-list__route-link {
+        color: var(--color-shopware-brand-500);
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .aica-contact-list__sender-main {
+        font-weight: 600;
+    }
+
+    .aica-contact-list__sender-sub,
+    .aica-contact-list__muted {
+        color: var(--color-gray-500);
+        font-size: 12px;
+        margin-top: 2px;
+        word-break: break-word;
+    }
+
+    .aica-contact-list__customer {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+}

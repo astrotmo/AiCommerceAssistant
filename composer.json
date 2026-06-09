@@ -1,0 +1,27 @@
+{
+    "name": "custom/ai-commerce-assistant",
+    "description": "AICA - AI Commerce Assistant for Shopware 6 storefront",
+    "type": "shopware-platform-plugin",
+    "version": "1.0.0",
+    "license": "MIT",
+    "require": {
+        "shopware/core": "~6.7.0"
+    },
+    "extra": {
+        "shopware-plugin-class": "AiCommerceAssistant\\AiCommerceAssistant",
+        "label": {
+            "de-DE": "AICA - AI Commerce Assistant",
+            "en-GB": "AICA - AI Commerce Assistant"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "AiCommerceAssistant\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AiCommerceAssistant\\Tests\\": "tests/"
+        }
+    }
+}

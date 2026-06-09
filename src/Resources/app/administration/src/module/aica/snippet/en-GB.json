@@ -1,0 +1,290 @@
+{
+    "aica": {
+        "general": {
+            "mainMenuItemGeneral": "AICA",
+            "descriptionTextModule": "Browse and inspect persisted AICA storefront sessions.",
+            "errorTitle": "AICA",
+            "na": "n/a",
+            "yes": "Yes",
+            "no": "No",
+            "guest": "Guest",
+            "customer": "Customer"
+        },
+        "config": {
+            "dashboardHint": "Need analytics or chat history tools?",
+            "openDashboard": "Open AICA dashboard"
+        },
+        "list": {
+            "title": "AICA Sessions",
+            "tableTitle": "Stored Sessions",
+            "actions": {
+                "openDetail": "Open session"
+            },
+            "columns": {
+                "createdAt": "Start",
+                "lastActivity": "Last activity",
+                "participant": "Participant",
+                "messageCount": "Messages",
+                "totalTokens": "Tokens",
+                "model": "Model",
+                "contactSubmitted": "Contact submitted",
+                "debug": "Debug",
+                "averageLatency": "Avg. latency",
+                "guestFingerprint": "Guest fingerprint"
+            },
+            "filters": {
+                "title": "Filters",
+                "searchTerm": "Search",
+                "searchPlaceholder": "Customer name/email, message text, session reference",
+                "dateFrom": "From",
+                "dateTo": "To",
+                "customerType": "Customer type",
+                "customerTypeAll": "All",
+                "customerTypeCustomer": "Logged-in customers",
+                "customerTypeGuest": "Guests",
+                "contactSubmitted": "Contact form",
+                "contactAll": "All",
+                "contactYes": "Submitted",
+                "contactNo": "Not submitted",
+                "debugOnly": "Debug sessions only",
+                "apply": "Apply filters",
+                "reset": "Reset"
+            },
+            "errors": {
+                "loadSessions": "Sessions could not be loaded."
+            },
+            "empty": {
+                "title": "No chat sessions",
+                "description": "No session matches your filters yet."
+            }
+        },
+        "detail": {
+            "title": "Chat Session",
+            "actions": {
+                "backToList": "Back to list"
+            },
+            "empty": {
+                "title": "Session unavailable",
+                "description": "The requested chat session could not be loaded."
+            },
+            "roles": {
+                "user": "User",
+                "assistant": "Assistant",
+                "system": "System",
+                "tool": "Tool"
+            },
+            "metadata": {
+                "title": "Metadata",
+                "sessionId": "Session ID",
+                "participant": "Participant",
+                "customerId": "Customer ID",
+                "createdAt": "Created",
+                "firstMessageAt": "First message",
+                "lastMessageAt": "Last message",
+                "model": "Model",
+                "totalMessageCount": "Total messages",
+                "totalTokens": "Total tokens",
+                "averageLatency": "Average latency",
+                "contactShown": "Contact form shown",
+                "contactSubmitted": "Contact form submitted",
+                "salesChannel": "Sales channel",
+                "language": "Language",
+                "storefrontSessionIdentifier": "Storefront session identifier",
+                "guestFingerprint": "Guest fingerprint",
+                "hashedIp": "Hashed IP",
+                "hashedUserAgent": "Hashed user agent"
+            },
+            "messages": {
+                "title": "Conversation",
+                "empty": "No messages were stored for this session.",
+                "model": "Model",
+                "tokens": "Tokens",
+                "latency": "Latency"
+            },
+            "products": {
+                "title": "Product references",
+                "userMentions": "Products mentioned by user",
+                "assistantResults": "Products returned by assistant/tool",
+                "otherSources": "Other sources",
+                "noUserMentions": "No user product references.",
+                "noAssistantResults": "No assistant/tool product references."
+            },
+            "contact": {
+                "title": "Contact submissions",
+                "target": "Mail target",
+                "confirmation": "Confirmation mail",
+                "internal": "Internal notification"
+            },
+            "blocks": {
+                "formular": "Contact form"
+            },
+            "debug": {
+                "title": "Debug",
+                "messagePayload": "Stored debug payload",
+                "debugEnabledSnapshot": "Debug mode snapshot",
+                "storeRawDebugPayloadsSnapshot": "Store raw payload snapshot",
+                "rawIp": "Raw IP",
+                "userAgentRaw": "Raw user agent"
+            },
+            "errors": {
+                "loadSession": "The chat session details could not be loaded."
+            }
+        },
+        "contactList": {
+            "title": "Contact requests",
+            "tableTitle": "Stored submissions",
+            "actions": {
+                "openDetail": "Open submission"
+            },
+            "columns": {
+                "createdAt": "Created",
+                "sender": "Sender",
+                "customer": "Customer",
+                "session": "Session",
+                "internalStatus": "Internal mail",
+                "confirmationStatus": "Confirmation mail",
+                "target": "Target address"
+            },
+            "filters": {
+                "title": "Filters",
+                "searchTerm": "Search",
+                "searchPlaceholder": "Name, email, message, session ID, customer",
+                "dateFrom": "From",
+                "dateTo": "To",
+                "hasSession": "Session linked",
+                "hasSessionAll": "All",
+                "hasSessionYes": "Linked to session",
+                "hasSessionNo": "No session link",
+                "internalStatus": "Internal mail status",
+                "confirmationStatus": "Confirmation mail status",
+                "statusAll": "All",
+                "statusSent": "Sent",
+                "statusFailed": "Failed",
+                "statusNotAttempted": "Not attempted",
+                "apply": "Apply filters",
+                "reset": "Reset"
+            },
+            "status": {
+                "sent": "Sent",
+                "failed": "Failed",
+                "notAttempted": "Not attempted"
+            },
+            "errors": {
+                "loadSubmissions": "Contact submissions could not be loaded."
+            },
+            "empty": {
+                "title": "No contact submissions",
+                "description": "No contact request matches your filters."
+            }
+        },
+        "contactDetail": {
+            "title": "Contact submission",
+            "actions": {
+                "backToList": "Back to list",
+                "openSession": "Open chat session"
+            },
+            "empty": {
+                "title": "Submission unavailable",
+                "description": "The requested contact submission could not be loaded."
+            },
+            "metadata": {
+                "title": "Submission metadata",
+                "id": "Submission ID",
+                "createdAt": "Created",
+                "sender": "Name",
+                "email": "Email",
+                "phone": "Phone",
+                "company": "Company",
+                "customer": "Customer",
+                "session": "Chat session",
+                "sourceContext": "Context / reason",
+                "productReference": "Product reference",
+                "target": "Internal target"
+            },
+            "mailStatus": {
+                "title": "Mail status",
+                "internal": "Internal notification",
+                "confirmation": "Customer confirmation"
+            },
+            "message": {
+                "title": "Submitted message"
+            },
+            "errors": {
+                "loadSubmission": "The contact submission details could not be loaded."
+            }
+        },
+        "dashboard": {
+            "title": "AICA Dashboard",
+            "general": {
+                "unavailable": "Not available"
+            },
+            "filters": {
+                "title": "Time range",
+                "preset": "Range preset",
+                "presetToday": "Today",
+                "presetLast7": "Last 7 days",
+                "presetLast30": "Last 30 days",
+                "presetMonth": "Current month",
+                "presetCustom": "Custom range",
+                "dateFrom": "From",
+                "dateTo": "To",
+                "range": "Selected range",
+                "noRange": "No valid date range selected.",
+                "apply": "Apply",
+                "reset": "Reset"
+            },
+            "metrics": {
+                "totalChats": "Total chats",
+                "sessionsInRange": "Sessions created in selected range",
+                "totalTokens": "Total token consumption",
+                "tokensUnavailableInfo": "Token data is not available for this range.",
+                "input": "Input",
+                "output": "Output",
+                "averageLatency": "Average response latency",
+                "latencyUnavailableInfo": "Latency data is not available for this range.",
+                "samples": "Latency samples",
+                "contactSubmissions": "Contact submissions",
+                "contactsInRange": "Stored contact requests in selected range"
+            },
+            "products": {
+                "assistantTitle": "Top assistant/tool product references",
+                "assistantEmpty": "No assistant/tool product references in this range.",
+                "userTitle": "Top user/contact product references",
+                "userEmpty": "No user/contact product references in this range.",
+                "sourceAssistant": "Assistant/Tool",
+                "sourceUser": "User/Contact",
+                "sourceOther": "Other source"
+            },
+            "export": {
+                "title": "CSV export",
+                "info": "Exports are limited to the currently selected date range.",
+                "sessions": "Export sessions",
+                "contacts": "Export contact requests",
+                "messages": "Export messages",
+                "success": "CSV export was generated successfully.",
+                "error": "CSV export could not be generated."
+            },
+            "delete": {
+                "title": "Manual data deletion",
+                "info": "Deletion is manual and permanent. No automatic cleanup is performed.",
+                "sessionsAction": "Delete sessions + related data",
+                "contactsAction": "Delete contact requests",
+                "sessionsTitle": "Delete sessions",
+                "contactsTitle": "Delete contact requests",
+                "confirmText": "This action permanently deletes data in the selected period. Type DELETE to continue.",
+                "confirmLabel": "Confirmation",
+                "confirmPlaceholder": "Type DELETE",
+                "cancel": "Cancel",
+                "confirmAction": "Delete permanently",
+                "sessionsDeleted": "Deleted sessions",
+                "relatedMessages": "related messages",
+                "contactsDeleted": "Deleted contact requests",
+                "noPermission": "You do not have permission to delete chat data.",
+                "error": "Deletion failed. Please check your permissions and try again."
+            },
+            "errors": {
+                "loadOverview": "Dashboard statistics could not be loaded."
+            }
+        }
+    }
+}

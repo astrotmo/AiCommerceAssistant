@@ -1,0 +1,87 @@
+.aica-dashboard {
+    &__range {
+        margin: 12px 0 0;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    &__metrics {
+        align-items: stretch;
+    }
+
+    &__metric-value {
+        font-size: 28px;
+        line-height: 1.1;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+
+    &__metric-subline {
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.4;
+        margin: 0;
+    }
+
+    &__top-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 8px;
+    }
+
+    &__top-list li {
+        border: 1px solid #d7dde6;
+        border-radius: 8px;
+        background: #f8fafc;
+        padding: 8px 10px;
+    }
+
+    &__top-main {
+        font-size: 13px;
+        color: #0f172a;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+
+    &__top-meta {
+        margin-top: 4px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    &__section-info {
+        margin: 0 0 10px;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    &__empty-line {
+        margin: 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    &__modal-text {
+        margin: 0 0 10px;
+        font-size: 13px;
+        color: #0f172a;
+    }
+
+    &__modal-range {
+        margin: 0 0 12px;
+        font-size: 12px;
+        color: #64748b;
+    }
+}

@@ -1,0 +1,181 @@
+<sw-page class="aica-contact-list">
+    <template #smart-bar-header>
+        <h2>
+            {{ $tc('aica.contactList.title') }}
+            <span v-if="!isLoading" class="sw-page__smart-bar-amount">
+                ({{ total }})
+            </span>
+        </h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <mt-button
+            variant="secondary"
+            size="default"
+            @click="resetFilters"
+        >
+            {{ $tc('aica.contactList.filters.reset') }}
+        </mt-button>
+
+        <mt-button
+            variant="primary"
+            size="default"
+            @click="applyFilters"
+        >
+            {{ $tc('aica.contactList.filters.apply') }}
+        </mt-button>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+            <sw-card :title="$tc('aica.contactList.filters.title')">
+                <sw-container
+                    class="aica-contact-list__filters"
+                    columns="repeat(auto-fit, minmax(220px, 1fr))"
+                    gap="16px"
+                >
+                    <mt-text-field
+                        v-model="filters.searchTerm"
+                        :label="$tc('aica.contactList.filters.searchTerm')"
+                        :placeholder="$tc('aica.contactList.filters.searchPlaceholder')"
+                        @keydown.enter.prevent="applyFilters"
+                    />
+
+                    <mt-datepicker
+                        :model-value="filters.dateFrom"
+                        type="date"
+                        :label="$tc('aica.contactList.filters.dateFrom')"
+                        :placeholder="$tc('sw-datepicker.date.placeholder')"
+                        @update:model-value="onDateFromChange"
+                    />
+
+                    <mt-datepicker
+                        :model-value="filters.dateTo"
+                        type="date"
+                        :label="$tc('aica.contactList.filters.dateTo')"
+                        :placeholder="$tc('sw-datepicker.date.placeholder')"
+                        @update:model-value="onDateToChange"
+                    />
+
+                    <sw-single-select
+                        :value="filters.hasSession"
+                        :label="$tc('aica.contactList.filters.hasSession')"
+                        :options="hasSessionOptions"
+                        label-property="label"
+                        value-property="value"
+                        @update:value="onHasSessionChange"
+                    />
+
+                    <sw-single-select
+                        :value="filters.internalStatus"
+                        :label="$tc('aica.contactList.filters.internalStatus')"
+                        :options="statusOptions"
+                        label-property="label"
+                        value-property="value"
+                        @update:value="onInternalStatusChange"
+                    />
+
+                    <sw-single-select
+                        :value="filters.confirmationStatus"
+                        :label="$tc('aica.contactList.filters.confirmationStatus')"
+                        :options="statusOptions"
+                        label-property="label"
+                        value-property="value"
+                        @update:value="onConfirmationStatusChange"
+                    />
+                </sw-container>
+            </sw-card>
+
+            <sw-card :title="$tc('aica.contactList.tableTitle')">
+                <mt-empty-state
+                    v-if="!isLoading && total === 0"
+                    icon="regular-envelope"
+                    :headline="$tc('aica.contactList.empty.title')"
+                    :description="$tc('aica.contactList.empty.description')"
+                />
+
+                <sw-entity-listing
+                    v-else
+                    :items="submissions"
+                    :columns="columns"
+                    :repository="contactRepository"
+                    :show-selection="false"
+                    :allow-edit="false"
+                    :allow-delete="false"
+                    :is-loading="isLoading"
+                    :sort-by="sortBy"
+                    :sort-direction="sortDirection"
+                    :disable-data-fetching="true"
+                    detail-route="aica.contactDetail"
+                    identifier="aica-contact-list"
+                    @column-sort="onSortColumn"
+                    @page-change="onPageChange"
+                >
+                    <template #column-createdAt="{ item }">
+                        <router-link
+                            class="aica-contact-list__route-link"
+                            :to="{ name: 'aica.contactDetail', params: { id: item.id } }"
+                        >
+                            {{ formatDate(item.createdAt) }}
+                        </router-link>
+                    </template>
+
+                    <template #column-sender="{ item }">
+                        <div class="aica-contact-list__sender">
+                            <div class="aica-contact-list__sender-main">{{ formatSender(item) }}</div>
+                            <div class="aica-contact-list__sender-sub">{{ item.phone || item.company || $tc('aica.general.na') }}</div>
+                        </div>
+                    </template>
+
+                    <template #column-customer="{ item }">
+                        <div class="aica-contact-list__customer">
+                            <span>{{ formatCustomer(item) }}</span>
+                            <span v-if="item.customerId" class="aica-contact-list__muted">{{ item.customerId }}</span>
+                        </div>
+                    </template>
+
+                    <template #column-sessionId="{ item }">
+                        <router-link
+                            v-if="item.sessionId"
+                            class="aica-contact-list__route-link"
+                            :to="{ name: 'aica.detail', params: { id: item.sessionId } }"
+                        >
+                            {{ item.sessionId }}
+                        </router-link>
+                        <span v-else class="aica-contact-list__muted">{{ $tc('aica.general.na') }}</span>
+                    </template>
+
+                    <template #column-internalNotificationMailSent="{ item }">
+                        <sw-label
+                            size="small"
+                            appearance="pill"
+                            :variant="statusVariant(item.internalNotificationMailSent, item.internalNotificationMailAttempted)"
+                        >
+                            {{ statusLabel(item.internalNotificationMailSent, item.internalNotificationMailAttempted) }}
+                        </sw-label>
+                    </template>
+
+                    <template #column-confirmationMailSent="{ item }">
+                        <sw-label
+                            size="small"
+                            appearance="pill"
+                            :variant="statusVariant(item.confirmationMailSent, item.confirmationMailAttempted)"
+                        >
+                            {{ statusLabel(item.confirmationMailSent, item.confirmationMailAttempted) }}
+                        </sw-label>
+                    </template>
+
+                    <template #column-mailTargetAddress="{ item }">
+                        {{ item.mailTargetAddress || $tc('aica.general.na') }}
+                    </template>
+
+                    <template #actions="{ item }">
+                        <sw-context-menu-item @click="toDetail(item.id)">
+                            {{ $tc('aica.contactList.actions.openDetail') }}
+                        </sw-context-menu-item>
+                    </template>
+                </sw-entity-listing>
+            </sw-card>
+        </sw-card-view>
+    </template>
+</sw-page>

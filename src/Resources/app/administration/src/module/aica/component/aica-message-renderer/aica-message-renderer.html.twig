@@ -1,0 +1,102 @@
+<div class="aica-message-renderer" :class="roleClass">
+    <div class="aica-message-renderer__meta">
+        <div class="aica-message-renderer__role">
+            {{ getRoleLabel(message.role) }}
+        </div>
+
+        <div class="aica-message-renderer__meta-values">
+            <span class="aica-message-renderer__meta-item">
+                {{ formatDate(message.createdAt) }}
+            </span>
+
+            <span v-if="message.modelName" class="aica-message-renderer__meta-item">
+                {{ $tc('aica.detail.messages.model') }}: {{ message.modelName }}
+            </span>
+
+            <span v-if="messageTokenTotal !== null" class="aica-message-renderer__meta-item">
+                {{ $tc('aica.detail.messages.tokens') }}: {{ messageTokenTotal }}
+                <template v-if="messageTokenInput !== null || messageTokenOutput !== null">
+                    ({{ messageTokenInputDisplay }} / {{ messageTokenOutputDisplay }})
+                </template>
+            </span>
+
+            <span v-if="messageLatencyMs !== null" class="aica-message-renderer__meta-item">
+                {{ $tc('aica.detail.messages.latency') }}: {{ messageLatencyMs }}ms
+            </span>
+        </div>
+    </div>
+
+    <div class="aica-message-renderer__bubble">
+        <template v-if="blocks.length > 0">
+            <div v-for="(block, blockIndex) in blocks"
+                 :key="`block-${message.id}-${blockIndex}`"
+                 class="aica-message-renderer__block"
+                 :class="`is-${block.kind || 'unknown'}`">
+
+                <template v-if="block.kind === 'text'">
+                    <p class="aica-message-renderer__text" v-text="renderPlainText(block.text)"></p>
+                </template>
+
+                <template v-else-if="block.kind === 'product_list'">
+                    <div class="aica-message-renderer__product-list-title" v-if="block.title">
+                        {{ block.title }}
+                    </div>
+
+                    <div class="aica-message-renderer__product-list">
+                        <div v-for="(product, productIndex) in asArray(block.products)"
+                             :key="`product-${message.id}-${blockIndex}-${productIndex}`"
+                             class="aica-message-renderer__product-item">
+                            <div class="aica-message-renderer__product-name">
+                                {{ product.name || $tc('aica.general.na') }}
+                            </div>
+                            <div class="aica-message-renderer__product-meta">
+                                <span v-if="product.productNumber">{{ product.productNumber }}</span>
+                                <span v-if="product.id">({{ product.id }})</span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template v-else-if="block.kind === 'info_box'">
+                    <div class="aica-message-renderer__info-box" :class="`is-${block.style || 'info'}`">
+                        <div class="aica-message-renderer__info-title" v-if="block.title">{{ block.title }}</div>
+                        <p class="aica-message-renderer__text" v-if="block.text" v-text="renderPlainText(block.text)"></p>
+                    </div>
+                </template>
+
+                <template v-else-if="block.kind === 'formular'">
+                    <div class="aica-message-renderer__formular">
+                        <div class="aica-message-renderer__formular-title">
+                            {{ block.title || $tc('aica.detail.blocks.formular') }}
+                        </div>
+
+                        <p v-if="block.reason" class="aica-message-renderer__text" v-text="renderPlainText(block.reason)"></p>
+
+                        <ul class="aica-message-renderer__formular-fields">
+                            <li v-for="(field, fieldIndex) in asArray(block.fields)"
+                                :key="`field-${message.id}-${blockIndex}-${fieldIndex}`">
+                                {{ field.label || field.key || field.name }}
+                                <span v-if="field.required">*</span>
+                            </li>
+                        </ul>
+                    </div>
+                </template>
+
+                <template v-else>
+                    <pre class="aica-message-renderer__json">{{ stringifyDebug(block) }}</pre>
+                </template>
+            </div>
+        </template>
+
+        <template v-else>
+            <p class="aica-message-renderer__text" v-text="renderPlainText(fallbackText)"></p>
+        </template>
+    </div>
+
+    <div class="aica-message-renderer__debug" v-if="hasPayloadDebug">
+        <div class="aica-message-renderer__debug-title">
+            {{ $tc('aica.detail.debug.messagePayload') }}
+        </div>
+        <pre class="aica-message-renderer__json">{{ stringifyDebug(message.debugPayload) }}</pre>
+    </div>
+</div>

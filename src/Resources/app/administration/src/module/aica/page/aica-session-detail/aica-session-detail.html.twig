@@ -1,0 +1,286 @@
+<sw-page class="aica-session-detail">
+    <template #smart-bar-header>
+        <h2>
+            {{ $tc('aica.detail.title') }}
+            <span v-if="session" class="sw-page__smart-bar-amount">
+                ({{ shortSessionId }})
+            </span>
+        </h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <mt-button
+            variant="secondary"
+            size="default"
+            @click="goBack"
+        >
+            {{ $tc('aica.detail.actions.backToList') }}
+        </mt-button>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+            <sw-loader v-if="isLoading" />
+
+            <mt-empty-state
+                v-else-if="!session"
+                icon="regular-comments"
+                :headline="$tc('aica.detail.empty.title')"
+                :description="$tc('aica.detail.empty.description')"
+            />
+
+            <sw-container
+                v-else
+                class="aica-session-detail__layout"
+                columns="360px 1fr"
+                gap="20px"
+            >
+                <div class="aica-session-detail__sidebar">
+                    <sw-card :title="$tc('aica.detail.metadata.title')">
+                        <dl class="aica-session-detail__meta-grid">
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.sessionId') }}</dt>
+                                <dd>{{ session.id }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.participant') }}</dt>
+                                <dd>
+                                    <div>{{ participantTitle }}</div>
+                                    <div class="aica-session-detail__meta-sub">{{ participantSubline }}</div>
+                                </dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.customerId') }}</dt>
+                                <dd>{{ session.customerId || $tc('aica.general.na') }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.createdAt') }}</dt>
+                                <dd>{{ formatDate(session.createdAt) }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.firstMessageAt') }}</dt>
+                                <dd>{{ formatDate(session.firstMessageAt) }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.lastMessageAt') }}</dt>
+                                <dd>{{ formatDate(session.lastMessageAt || session.updatedAt || session.createdAt) }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.model') }}</dt>
+                                <dd>{{ session.modelName || $tc('aica.general.na') }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.totalMessageCount') }}</dt>
+                                <dd>{{ session.totalMessageCount }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.totalTokens') }}</dt>
+                                <dd>
+                                    {{ formatNullableNumber(session.totalTokens) }}
+                                    <span class="aica-session-detail__meta-sub">
+                                        ({{ formatNullableNumber(session.totalInputTokens) }} / {{ formatNullableNumber(session.totalOutputTokens) }})
+                                    </span>
+                                </dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.averageLatency') }}</dt>
+                                <dd>{{ formatNullableLatency(session.averageResponseLatencyMs) }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.contactShown') }}</dt>
+                                <dd>{{ formatBoolean(session.contactFormShown) }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.contactSubmitted') }}</dt>
+                                <dd>{{ formatBoolean(session.contactFormSubmitted) }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.salesChannel') }}</dt>
+                                <dd>{{ resolveSalesChannelLabel() }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.language') }}</dt>
+                                <dd>{{ resolveLanguageLabel() }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.storefrontSessionIdentifier') }}</dt>
+                                <dd>{{ session.storefrontSessionIdentifier || $tc('aica.general.na') }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.hashedIp') }}</dt>
+                                <dd>{{ session.hashedIp || $tc('aica.general.na') }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.metadata.hashedUserAgent') }}</dt>
+                                <dd>{{ session.hashedUserAgent || $tc('aica.general.na') }}</dd>
+                            </div>
+                        </dl>
+                    </sw-card>
+
+                    <sw-card
+                        v-if="hasProductReferences"
+                        :title="$tc('aica.detail.products.title')"
+                    >
+                        <div class="aica-session-detail__reference-group">
+                            <h4>{{ $tc('aica.detail.products.userMentions') }}</h4>
+                            <ul v-if="userProductReferences.length > 0" class="aica-session-detail__reference-list">
+                                <li
+                                    v-for="(reference, index) in userProductReferences"
+                                    :key="`user-ref-${index}`"
+                                >
+                                    <span>{{ formatReferenceLine(reference) }}</span>
+                                    <span class="aica-session-detail__reference-count">x{{ reference.count }}</span>
+                                </li>
+                            </ul>
+                            <p v-else class="aica-session-detail__empty-line">
+                                {{ $tc('aica.detail.products.noUserMentions') }}
+                            </p>
+                        </div>
+
+                        <div class="aica-session-detail__reference-group">
+                            <h4>{{ $tc('aica.detail.products.assistantResults') }}</h4>
+                            <ul v-if="assistantProductReferences.length > 0" class="aica-session-detail__reference-list">
+                                <li
+                                    v-for="(reference, index) in assistantProductReferences"
+                                    :key="`assistant-ref-${index}`"
+                                >
+                                    <span>{{ formatReferenceLine(reference) }}</span>
+                                    <span class="aica-session-detail__reference-count">x{{ reference.count }}</span>
+                                </li>
+                            </ul>
+                            <p v-else class="aica-session-detail__empty-line">
+                                {{ $tc('aica.detail.products.noAssistantResults') }}
+                            </p>
+                        </div>
+
+                        <div
+                            v-if="otherProductReferences.length > 0"
+                            class="aica-session-detail__reference-group"
+                        >
+                            <h4>{{ $tc('aica.detail.products.otherSources') }}</h4>
+                            <ul class="aica-session-detail__reference-list">
+                                <li
+                                    v-for="(reference, index) in otherProductReferences"
+                                    :key="`other-ref-${index}`"
+                                >
+                                    <span>{{ formatReferenceLine(reference) }}</span>
+                                    <span class="aica-session-detail__reference-count">x{{ reference.count }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </sw-card>
+
+                    <sw-card
+                        v-if="contactSubmissions.length > 0"
+                        :title="$tc('aica.detail.contact.title')"
+                    >
+                        <div
+                            v-for="submission in contactSubmissions"
+                            :key="submission.id"
+                            class="aica-session-detail__contact-item"
+                        >
+                            <div class="aica-session-detail__contact-header">
+                                <strong>{{ formatSubmissionSender(submission) }}</strong>
+                                <div class="aica-session-detail__contact-header-actions">
+                                    <span>{{ formatDate(submission.createdAt) }}</span>
+                                    <router-link
+                                        class="aica-session-detail__route-link"
+                                        :to="{ name: 'aica.contactDetail', params: { id: submission.id } }"
+                                    >
+                                        {{ $tc('aica.contactList.actions.openDetail') }}
+                                    </router-link>
+                                </div>
+                            </div>
+
+                            <div class="aica-session-detail__contact-meta">
+                                <span>{{ $tc('aica.detail.contact.target') }}: {{ submission.mailTargetAddress }}</span>
+                                <span>
+                                    {{ $tc('aica.detail.contact.confirmation') }}:
+                                    {{ formatMailStatus(submission.confirmationMailSent, submission.confirmationMailAttempted) }}
+                                </span>
+                                <span>
+                                    {{ $tc('aica.detail.contact.internal') }}:
+                                    {{ formatMailStatus(submission.internalNotificationMailSent, submission.internalNotificationMailAttempted) }}
+                                </span>
+                            </div>
+
+                            <p
+                                v-if="submission.internalNotificationMailError"
+                                class="aica-session-detail__contact-error"
+                            >
+                                {{ submission.internalNotificationMailError }}
+                            </p>
+
+                            <p
+                                v-if="submission.confirmationMailError"
+                                class="aica-session-detail__contact-error"
+                            >
+                                {{ submission.confirmationMailError }}
+                            </p>
+
+                            <p class="aica-session-detail__contact-message">{{ submission.messageText }}</p>
+                        </div>
+                    </sw-card>
+
+                    <sw-card
+                        v-if="showDebugSection"
+                        :title="$tc('aica.detail.debug.title')"
+                    >
+                        <dl class="aica-session-detail__meta-grid">
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.debug.debugEnabledSnapshot') }}</dt>
+                                <dd>{{ formatBoolean(session.debugEnabledSnapshot) }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.debug.storeRawDebugPayloadsSnapshot') }}</dt>
+                                <dd>{{ formatBoolean(session.storeRawDebugPayloadsSnapshot) }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.debug.rawIp') }}</dt>
+                                <dd>{{ session.rawIp || $tc('aica.general.na') }}</dd>
+                            </div>
+
+                            <div class="aica-session-detail__meta-row">
+                                <dt>{{ $tc('aica.detail.debug.userAgentRaw') }}</dt>
+                                <dd>{{ session.userAgentRaw || $tc('aica.general.na') }}</dd>
+                            </div>
+                        </dl>
+                    </sw-card>
+                </div>
+
+                <sw-card :title="$tc('aica.detail.messages.title')">
+                    <p class="aica-session-detail__empty-line" v-if="messages.length === 0">
+                        {{ $tc('aica.detail.messages.empty') }}
+                    </p>
+
+                    <div v-else class="aica-session-detail__messages">
+                        <aica-message-renderer
+                            v-for="message in messages"
+                            :key="message.id"
+                            :message="message"
+                            :show-debug="showDebugSection"
+                        />
+                    </div>
+                </sw-card>
+            </sw-container>
+        </sw-card-view>
+    </template>
+</sw-page>

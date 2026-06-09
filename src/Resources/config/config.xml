@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+
+  <card>
+    <title>Backend and model</title>
+    <title lang="de-DE">Backend und Modell</title>
+
+    <input-field type="url">
+      <name>chatUrl</name>
+      <label>Chat backend URL</label>
+      <label lang="de-DE">Chat-Backend-URL</label>
+      <helpText>Target used by the Shopware proxy route. Enter the backend base URL or the full chat endpoint.</helpText>
+      <helpText lang="de-DE">Ziel der Shopware-Proxy-Route. Trage die Backend-Basis-URL oder den vollständigen Chat-Endpunkt ein.</helpText>
+      <placeholder>http://ai-backend:8002</placeholder>
+    </input-field>
+
+    <input-field type="single-select">
+      <name>llmModel</name>
+      <label>Ollama model</label>
+      <label lang="de-DE">Ollama-Modell</label>
+      <helpText>Model name sent with each chat request so the backend can choose the matching local model.</helpText>
+      <helpText lang="de-DE">Modellname, der bei jeder Chat-Anfrage an das Backend gesendet wird.</helpText>
+      <options>
+        <option>
+          <id>llama3.1:8b</id>
+          <name>LLaMA 3.1 8B</name>
+        </option>
+        <option>
+          <id>llama3.2:3b</id>
+          <name>LLaMA 3.2 3B</name>
+        </option>
+        <option>
+          <id>ministral-3:8b</id>
+          <name>Ministral-3 8B</name>
+        </option>
+        <option>
+          <id>qwen3.5:9b</id>
+          <name>Qwen 3.5 9B</name>
+        </option>
+        <option>
+          <id>granite4.1:8b</id>
+          <name>Granite 4.1 8B</name>
+        </option>
+      </options>
+      <defaultValue>ministral-3:8b</defaultValue>
+      <placeholder>Ministral-3 8B</placeholder>
+    </input-field>
+  </card>
+
+  <card>
+    <title>Widget display</title>
+    <title lang="de-DE">Widget-Darstellung</title>
+
+    <input-field type="text">
+      <name>welcomeMessage</name>
+      <label>Welcome message</label>
+      <label lang="de-DE">Begrüßung</label>
+      <helpText>First assistant message shown when the chat widget is rendered.</helpText>
+      <helpText lang="de-DE">Erste Assistenten-Nachricht, die beim Laden des Chat-Widgets angezeigt wird.</helpText>
+      <placeholder>Hallo, wie kann ich behilflich sein?</placeholder>
+      <defaultValue>Hallo, wie kann ich behilflich sein?</defaultValue>
+    </input-field>
+
+    <input-field type="text">
+      <name>buttonLabel</name>
+      <label>Button and window title</label>
+      <label lang="de-DE">Button- und Fenstertitel</label>
+      <helpText>Text used for the floating chat button and the chat panel header.</helpText>
+      <helpText lang="de-DE">Text für den schwebenden Chat-Button und die Überschrift des Chat-Fensters.</helpText>
+      <placeholder>Chat</placeholder>
+      <defaultValue>Chat</defaultValue>
+    </input-field>
+
+    <input-field type="bool">
+      <name>autoOpen</name>
+      <label>Open automatically</label>
+      <label lang="de-DE">Automatisch öffnen</label>
+      <helpText>Opens the chat panel shortly after the first page load.</helpText>
+      <helpText lang="de-DE">Öffnet das Chat-Fenster kurz nach dem ersten Seitenaufruf.</helpText>
+      <defaultValue>false</defaultValue>
+    </input-field>
+
+    <input-field type="single-select">
+      <name>position</name>
+      <label>Widget position</label>
+      <label lang="de-DE">Widget-Position</label>
+      <helpText>Screen corner used for the floating chat button.</helpText>
+      <helpText lang="de-DE">Bildschirm-Ecke für den schwebenden Chat-Button.</helpText>
+      <options>
+        <option>
+          <id>bottom-right</id>
+          <name>Bottom right</name>
+          <name lang="de-DE">Unten rechts</name>
+        </option>
+        <option>
+          <id>bottom-left</id>
+          <name>Bottom left</name>
+          <name lang="de-DE">Unten links</name>
+        </option>
+      </options>
+      <defaultValue>bottom-right</defaultValue>
+    </input-field>
+  </card>
+
+  <card>
+    <title>Product prices</title>
+    <title lang="de-DE">Produktpreise</title>
+
+    <input-field type="single-select">
+      <name>productPriceVisibility</name>
+      <label>Show prices in chat product results</label>
+      <label lang="de-DE">Preise in Chat-Produkttreffern anzeigen</label>
+      <helpText>Controls whether product cards returned by the assistant may show Shopware prices.</helpText>
+      <helpText lang="de-DE">Steuert, ob Produktkarten aus dem Assistenten Shopware-Preise anzeigen dürfen.</helpText>
+      <options>
+        <option>
+          <id>customers</id>
+          <name>Only logged-in customers</name>
+          <name lang="de-DE">Nur angemeldete Kunden</name>
+        </option>
+        <option>
+          <id>all</id>
+          <name>Everyone</name>
+          <name lang="de-DE">Alle Besucher</name>
+        </option>
+        <option>
+          <id>none</id>
+          <name>Nobody</name>
+          <name lang="de-DE">Niemand</name>
+        </option>
+      </options>
+      <defaultValue>customers</defaultValue>
+    </input-field>
+
+    <input-field type="single-select">
+      <name>productPriceMode</name>
+      <label>Preferred price source</label>
+      <label lang="de-DE">Bevorzugte Preisquelle</label>
+      <helpText>Choose whether the chat should use the current calculated Shopware price or prefer available tier/special prices.</helpText>
+      <helpText lang="de-DE">Legt fest, ob der Chat den aktuell berechneten Shopware-Preis nutzt oder vorhandene Staffel-/Sonderpreise bevorzugt.</helpText>
+      <options>
+        <option>
+          <id>advanced-first</id>
+          <name>Prefer tier/special price</name>
+          <name lang="de-DE">Staffel-/Sonderpreis bevorzugen</name>
+        </option>
+        <option>
+          <id>calculated</id>
+          <name>Calculated Shopware price</name>
+          <name lang="de-DE">Berechneter Shopware-Preis</name>
+        </option>
+      </options>
+      <defaultValue>advanced-first</defaultValue>
+    </input-field>
+
+    <input-field type="bool">
+      <name>showProductPriceHint</name>
+      <label>Show price explanation hint</label>
+      <label lang="de-DE">Preiserklärung anzeigen</label>
+      <helpText>Adds the asterisk and hover hint that explains whether a standard or special price is shown.</helpText>
+      <helpText lang="de-DE">Zeigt Sternchen und Hover-Hinweis, ob ein Standard- oder Sonderpreis angezeigt wird.</helpText>
+      <defaultValue>true</defaultValue>
+    </input-field>
+  </card>
+
+  <card>
+    <title>Contact mails</title>
+    <title lang="de-DE">Kontaktmails</title>
+
+    <input-field type="text">
+      <name>contactRecipientEmail</name>
+      <label>Internal recipient email</label>
+      <label lang="de-DE">Interne Empfängeradresse</label>
+      <helpText>Address that receives AICA contact form submissions.</helpText>
+      <helpText lang="de-DE">Adresse, die Einsendungen aus dem AICA-Kontaktformular erhält.</helpText>
+      <placeholder>support@example.com</placeholder>
+    </input-field>
+
+    <input-field type="bool">
+      <name>enableContactConfirmationMail</name>
+      <label>Send customer confirmation</label>
+      <label lang="de-DE">Kundenbestätigung senden</label>
+      <helpText>Sends a confirmation email to the address entered in the chat contact form.</helpText>
+      <helpText lang="de-DE">Sendet eine Bestätigung an die im Chat-Kontaktformular eingetragene E-Mail-Adresse.</helpText>
+      <defaultValue>true</defaultValue>
+    </input-field>
+
+    <input-field type="text">
+      <name>contactMailSenderName</name>
+      <label>Sender name override</label>
+      <label lang="de-DE">Absendername überschreiben</label>
+      <helpText>Optional sender name used for the internal mail and the customer confirmation.</helpText>
+      <helpText lang="de-DE">Optionaler Absendername für die interne Mail und die Kundenbestätigung.</helpText>
+      <placeholder>Customer Service</placeholder>
+    </input-field>
+  </card>
+
+  <card>
+    <title>Debug and privacy</title>
+    <title lang="de-DE">Debug und Datenschutz</title>
+
+    <input-field type="bool">
+      <name>enableDebugMode</name>
+      <label>Enable debug mode</label>
+      <label lang="de-DE">Debug-Modus aktivieren</label>
+      <helpText>Writes storefront console logs and enables optional raw debug storage below.</helpText>
+      <helpText lang="de-DE">Schreibt Storefront-Logs in die Browser-Konsole und aktiviert die optionalen Rohdaten-Speicherungen unten.</helpText>
+      <defaultValue>false</defaultValue>
+    </input-field>
+
+    <input-field type="bool">
+      <name>storeRawDebugPayloads</name>
+      <label>Store raw debug payloads</label>
+      <label lang="de-DE">Rohdaten-Payloads speichern</label>
+      <helpText>Only applies while debug mode is enabled. Stores full request/response payloads for troubleshooting.</helpText>
+      <helpText lang="de-DE">Gilt nur bei aktivem Debug-Modus. Speichert vollständige Request-/Response-Payloads zur Fehlersuche.</helpText>
+      <defaultValue>false</defaultValue>
+    </input-field>
+
+    <input-field type="bool">
+      <name>storeRawIpAddress</name>
+      <label>Store raw IP addresses</label>
+      <label lang="de-DE">IP-Adressen im Klartext speichern</label>
+      <helpText>Only applies while debug mode is enabled. Keep inactive unless raw IPs are needed temporarily.</helpText>
+      <helpText lang="de-DE">Gilt nur bei aktivem Debug-Modus. Nur vorübergehend aktivieren, wenn Klartext-IP-Adressen nötig sind.</helpText>
+      <defaultValue>false</defaultValue>
+    </input-field>
+
+    <input-field type="bool">
+      <name>debugLogContactSubmissions</name>
+      <label>Log contact mail status</label>
+      <label lang="de-DE">Kontaktmail-Status loggen</label>
+      <helpText>Writes detailed mail status information for AICA contact submissions.</helpText>
+      <helpText lang="de-DE">Schreibt detaillierte Mail-Statusinformationen für AICA-Kontaktanfragen.</helpText>
+      <defaultValue>false</defaultValue>
+    </input-field>
+  </card>
+</config>

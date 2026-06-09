@@ -1,0 +1,237 @@
+<sw-page class="aica-dashboard">
+    <template #smart-bar-header>
+        <h2>{{ $tc('aica.dashboard.title') }}</h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <mt-button
+            variant="secondary"
+            size="default"
+            @click="resetFilters"
+        >
+            {{ $tc('aica.dashboard.filters.reset') }}
+        </mt-button>
+
+        <mt-button
+            variant="primary"
+            size="default"
+            @click="applyFilters"
+        >
+            {{ $tc('aica.dashboard.filters.apply') }}
+        </mt-button>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+            <sw-card :title="$tc('aica.dashboard.filters.title')">
+                <sw-container
+                    class="aica-dashboard__filters"
+                    columns="repeat(auto-fit, minmax(220px, 1fr))"
+                    gap="16px"
+                >
+                    <sw-single-select
+                        :value="filters.preset"
+                        :label="$tc('aica.dashboard.filters.preset')"
+                        :options="datePresetOptions"
+                        label-property="label"
+                        value-property="value"
+                        @update:value="onPresetChange"
+                    />
+
+                    <mt-datepicker
+                        :model-value="filters.dateFrom"
+                        type="date"
+                        :label="$tc('aica.dashboard.filters.dateFrom')"
+                        :placeholder="$tc('sw-datepicker.date.placeholder')"
+                        @update:model-value="onDateFromChange"
+                    />
+
+                    <mt-datepicker
+                        :model-value="filters.dateTo"
+                        type="date"
+                        :label="$tc('aica.dashboard.filters.dateTo')"
+                        :placeholder="$tc('sw-datepicker.date.placeholder')"
+                        @update:model-value="onDateToChange"
+                    />
+                </sw-container>
+
+                <p class="aica-dashboard__range">{{ rangeLabel }}</p>
+            </sw-card>
+
+            <sw-loader v-if="isLoading" />
+
+            <template v-else>
+                <sw-container
+                    class="aica-dashboard__metrics"
+                    columns="repeat(auto-fit, minmax(220px, 1fr))"
+                    gap="16px"
+                >
+                    <sw-card :title="$tc('aica.dashboard.metrics.totalChats')">
+                        <div class="aica-dashboard__metric-value">{{ totalChatsValue }}</div>
+                        <div class="aica-dashboard__metric-subline">{{ $tc('aica.dashboard.metrics.sessionsInRange') }}</div>
+                    </sw-card>
+
+                    <sw-card :title="$tc('aica.dashboard.metrics.totalTokens')">
+                        <div class="aica-dashboard__metric-value">{{ totalTokenValue }}</div>
+                        <div class="aica-dashboard__metric-subline">{{ totalTokenSubline }}</div>
+                    </sw-card>
+
+                    <sw-card :title="$tc('aica.dashboard.metrics.averageLatency')">
+                        <div class="aica-dashboard__metric-value">{{ averageLatencyValue }}</div>
+                        <div class="aica-dashboard__metric-subline">{{ averageLatencySubline }}</div>
+                    </sw-card>
+
+                    <sw-card :title="$tc('aica.dashboard.metrics.contactSubmissions')">
+                        <div class="aica-dashboard__metric-value">{{ contactSubmissionsValue }}</div>
+                        <div class="aica-dashboard__metric-subline">{{ $tc('aica.dashboard.metrics.contactsInRange') }}</div>
+                    </sw-card>
+                </sw-container>
+
+                <sw-container columns="repeat(auto-fit, minmax(360px, 1fr))" gap="16px">
+                    <sw-card :title="$tc('aica.dashboard.products.assistantTitle')">
+                        <ul
+                            v-if="topAssistantProducts.length > 0"
+                            class="aica-dashboard__top-list"
+                        >
+                            <li
+                                v-for="(entry, index) in topAssistantProducts"
+                                :key="`assistant-${index}`"
+                            >
+                                <div class="aica-dashboard__top-main">{{ resolveProductLabel(entry) }}</div>
+                                <div class="aica-dashboard__top-meta">
+                                    <span>{{ resolveSourceLabel(entry.source) }}</span>
+                                    <span>x{{ formatInteger(entry.count) }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <p v-else class="aica-dashboard__empty-line">
+                            {{ $tc('aica.dashboard.products.assistantEmpty') }}
+                        </p>
+                    </sw-card>
+
+                    <sw-card :title="$tc('aica.dashboard.products.userTitle')">
+                        <ul
+                            v-if="topUserProducts.length > 0"
+                            class="aica-dashboard__top-list"
+                        >
+                            <li
+                                v-for="(entry, index) in topUserProducts"
+                                :key="`user-${index}`"
+                            >
+                                <div class="aica-dashboard__top-main">{{ resolveProductLabel(entry) }}</div>
+                                <div class="aica-dashboard__top-meta">
+                                    <span>{{ resolveSourceLabel(entry.source) }}</span>
+                                    <span>x{{ formatInteger(entry.count) }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <p v-else class="aica-dashboard__empty-line">
+                            {{ $tc('aica.dashboard.products.userEmpty') }}
+                        </p>
+                    </sw-card>
+                </sw-container>
+
+                <sw-card :title="$tc('aica.dashboard.export.title')">
+                    <p class="aica-dashboard__section-info">{{ $tc('aica.dashboard.export.info') }}</p>
+
+                    <div class="aica-dashboard__actions">
+                        <mt-button
+                            variant="secondary"
+                            size="default"
+                            :disabled="isExporting.sessions"
+                            @click="exportCsv('sessions')"
+                        >
+                            {{ $tc('aica.dashboard.export.sessions') }}
+                        </mt-button>
+
+                        <mt-button
+                            variant="secondary"
+                            size="default"
+                            :disabled="isExporting.contacts"
+                            @click="exportCsv('contacts')"
+                        >
+                            {{ $tc('aica.dashboard.export.contacts') }}
+                        </mt-button>
+
+                        <mt-button
+                            variant="secondary"
+                            size="default"
+                            :disabled="isExporting.messages"
+                            @click="exportCsv('messages')"
+                        >
+                            {{ $tc('aica.dashboard.export.messages') }}
+                        </mt-button>
+                    </div>
+                </sw-card>
+
+                <sw-card :title="$tc('aica.dashboard.delete.title')">
+                    <p class="aica-dashboard__section-info">{{ $tc('aica.dashboard.delete.info') }}</p>
+
+                    <div
+                        v-if="canDeleteData"
+                        class="aica-dashboard__actions"
+                    >
+                        <mt-button
+                            variant="secondary"
+                            size="default"
+                            @click="openDeleteModal('sessions')"
+                        >
+                            {{ $tc('aica.dashboard.delete.sessionsAction') }}
+                        </mt-button>
+
+                        <mt-button
+                            variant="secondary"
+                            size="default"
+                            @click="openDeleteModal('contacts')"
+                        >
+                            {{ $tc('aica.dashboard.delete.contactsAction') }}
+                        </mt-button>
+                    </div>
+
+                    <p
+                        v-else
+                        class="aica-dashboard__empty-line"
+                    >
+                        {{ $tc('aica.dashboard.delete.noPermission') }}
+                    </p>
+                </sw-card>
+            </template>
+        </sw-card-view>
+
+        <sw-modal
+            v-if="deleteModalType"
+            variant="small"
+            :title="deleteModalTitle"
+            @modal-close="closeDeleteModal"
+        >
+            <p class="aica-dashboard__modal-text">{{ $tc('aica.dashboard.delete.confirmText') }}</p>
+            <p class="aica-dashboard__modal-range">{{ rangeLabel }}</p>
+
+            <mt-text-field
+                v-model="deleteConfirmation"
+                :label="$tc('aica.dashboard.delete.confirmLabel')"
+                :placeholder="$tc('aica.dashboard.delete.confirmPlaceholder')"
+            />
+
+            <template #modal-footer>
+                <mt-button
+                    variant="secondary"
+                    size="default"
+                    :disabled="isDeleting"
+                    @click="closeDeleteModal"
+                >
+                    {{ $tc('aica.dashboard.delete.cancel') }}
+                </mt-button>
+
+                <mt-button
+                    variant="primary"
+                    size="default"
+                    :disabled="deleteButtonDisabled"
+                    @click="confirmDeletion"
+                >
+                    {{ $tc('aica.dashboard.delete.confirmAction') }}
+                </mt-button>
+            </template>
+        </sw-modal>
+    </template>
+</sw-page>

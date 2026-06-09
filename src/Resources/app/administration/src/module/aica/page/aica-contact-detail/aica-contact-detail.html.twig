@@ -1,0 +1,164 @@
+<sw-page class="aica-contact-detail">
+    <template #smart-bar-header>
+        <h2>
+            {{ $tc('aica.contactDetail.title') }}
+            <span v-if="submission" class="sw-page__smart-bar-amount">({{ submission.id }})</span>
+        </h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <mt-button
+            variant="secondary"
+            size="default"
+            @click="goBack"
+        >
+            {{ $tc('aica.contactDetail.actions.backToList') }}
+        </mt-button>
+
+        <mt-button
+            v-if="canOpenSession"
+            variant="primary"
+            size="default"
+            @click="toSession"
+        >
+            {{ $tc('aica.contactDetail.actions.openSession') }}
+        </mt-button>
+    </template>
+
+    <template #content>
+        <sw-card-view>
+            <sw-loader v-if="isLoading" />
+
+            <mt-empty-state
+                v-else-if="!submission"
+                icon="regular-envelope"
+                :headline="$tc('aica.contactDetail.empty.title')"
+                :description="$tc('aica.contactDetail.empty.description')"
+            />
+
+            <sw-container
+                v-else
+                class="aica-contact-detail__layout"
+                columns="360px 1fr"
+                gap="20px"
+            >
+                <div class="aica-contact-detail__sidebar">
+                    <sw-card :title="$tc('aica.contactDetail.metadata.title')">
+                        <dl class="aica-contact-detail__meta-grid">
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.id') }}</dt>
+                                <dd>{{ submission.id }}</dd>
+                            </div>
+
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.createdAt') }}</dt>
+                                <dd>{{ formatDate(submission.createdAt) }}</dd>
+                            </div>
+
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.sender') }}</dt>
+                                <dd>{{ submission.name || $tc('aica.general.na') }}</dd>
+                            </div>
+
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.email') }}</dt>
+                                <dd>{{ submission.email }}</dd>
+                            </div>
+
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.phone') }}</dt>
+                                <dd>{{ submission.phone || $tc('aica.general.na') }}</dd>
+                            </div>
+
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.company') }}</dt>
+                                <dd>{{ submission.company || $tc('aica.general.na') }}</dd>
+                            </div>
+
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.customer') }}</dt>
+                                <dd>
+                                    <div>{{ customerLabel }}</div>
+                                    <div class="aica-contact-detail__meta-sub">
+                                        {{ submission.customerId || $tc('aica.general.na') }}
+                                    </div>
+                                </dd>
+                            </div>
+
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.session') }}</dt>
+                                <dd>
+                                    <router-link
+                                        v-if="submission.sessionId"
+                                        class="aica-contact-detail__route-link"
+                                        :to="{ name: 'aica.detail', params: { id: submission.sessionId } }"
+                                    >
+                                        {{ submission.sessionId }}
+                                    </router-link>
+                                    <span v-else>{{ $tc('aica.general.na') }}</span>
+                                </dd>
+                            </div>
+
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.sourceContext') }}</dt>
+                                <dd>{{ submission.sourceContext || $tc('aica.general.na') }}</dd>
+                            </div>
+
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.productReference') }}</dt>
+                                <dd>{{ submission.productReferenceText || $tc('aica.general.na') }}</dd>
+                            </div>
+
+                            <div class="aica-contact-detail__meta-row">
+                                <dt>{{ $tc('aica.contactDetail.metadata.target') }}</dt>
+                                <dd>{{ submission.mailTargetAddress || $tc('aica.general.na') }}</dd>
+                            </div>
+                        </dl>
+                    </sw-card>
+
+                    <sw-card :title="$tc('aica.contactDetail.mailStatus.title')">
+                        <div class="aica-contact-detail__status-row">
+                            <span>{{ $tc('aica.contactDetail.mailStatus.internal') }}</span>
+                            <sw-label
+                                size="small"
+                                appearance="pill"
+                                :variant="statusVariant(submission.internalNotificationMailSent, submission.internalNotificationMailAttempted)"
+                            >
+                                {{ statusLabel(submission.internalNotificationMailSent, submission.internalNotificationMailAttempted) }}
+                            </sw-label>
+                        </div>
+
+                        <p
+                            v-if="submission.internalNotificationMailError"
+                            class="aica-contact-detail__error"
+                        >
+                            {{ submission.internalNotificationMailError }}
+                        </p>
+
+                        <div class="aica-contact-detail__status-row">
+                            <span>{{ $tc('aica.contactDetail.mailStatus.confirmation') }}</span>
+                            <sw-label
+                                size="small"
+                                appearance="pill"
+                                :variant="statusVariant(submission.confirmationMailSent, submission.confirmationMailAttempted)"
+                            >
+                                {{ statusLabel(submission.confirmationMailSent, submission.confirmationMailAttempted) }}
+                            </sw-label>
+                        </div>
+
+                        <p
+                            v-if="submission.confirmationMailError"
+                            class="aica-contact-detail__error"
+                        >
+                            {{ submission.confirmationMailError }}
+                        </p>
+                    </sw-card>
+                </div>
+
+                <sw-card :title="$tc('aica.contactDetail.message.title')">
+                    <pre class="aica-contact-detail__message">{{ submission.messageText }}</pre>
+                </sw-card>
+            </sw-container>
+        </sw-card-view>
+    </template>
+</sw-page>

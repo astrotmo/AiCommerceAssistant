@@ -1,0 +1,619 @@
+/* ============================================================================
+   AiCommerceAssistant – Basis-Styles
+   - Light Theme-Token
+   - Positionierung (unten links / rechts)
+   - Floating Button
+   - Chat-Fenster, Header, Messages, Input
+   - Bubble-Styles
+   - Produktlisten & Info-Boxen
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   Theme-Variablen
+   ------------------------------------------------------------------------ */
+.aica-wrap {
+  --aica-bg: #fff;          /* Hintergrund */
+  --aica-text: #474a57;     /* Sekundäres Dunkelgrau */
+  --aica-primary: #147fc2;  /* Primärer Akzent (Blau) */
+  --aica-border: #798490;   /* Rahmen-Grau */
+
+  --aica-bg-soft: #f7f9fb;  /* Weicher Panel-Hintergrund */
+  --aica-muted-text: #5b6270;
+  --aica-shadow: 0 16px 48px rgba(20, 31, 51, 0.15);
+
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none; /* Interaction nur über Kinder */
+  transition: left .18s ease, right .18s ease, bottom .18s ease, transform .18s ease;
+}
+
+/* Positionierung: Ecke (unten links / rechts) */
+.aica-bottom-left {
+  bottom: 24px;
+  left: 24px;
+}
+
+.aica-bottom-right {
+  bottom: 24px;
+  right: 24px;
+}
+
+/* In geöffnetem Zustand können Inhalte geklickt werden */
+.aica-wrap.aica-open {
+  pointer-events: auto;
+}
+
+/* ---------------------------------------------------------------------------
+   Floating-Action-Button (Chat öffnen)
+   ------------------------------------------------------------------------ */
+.aica-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 64px;
+  height: 48px;
+  padding: 0 1.4rem;
+
+  border-radius: 999px;
+  border: 1px solid var(--aica-primary);
+  background: var(--aica-primary);
+  color: #fff;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  box-shadow: var(--aica-shadow);
+  pointer-events: auto;
+  transition:
+    box-shadow .15s ease,
+    transform .04s ease,
+    filter .12s ease;
+}
+
+.aica-button:hover {
+  filter: brightness(1.05);
+}
+
+.aica-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 8px 24px rgba(20, 31, 51, 0.18);
+}
+
+/* ---------------------------------------------------------------------------
+   Chat-Fenster (Panel)
+   ------------------------------------------------------------------------ */
+.aica-window {
+  position: absolute;
+  bottom: 64px; /* etwas über dem Button */
+  right: 0;
+  left: auto;
+
+  width: 420px; /* etwas größer */
+  max-width: min(90vw, 420px);
+  height: 520px; /* etwas höher */
+  max-height: min(80vh, 520px);
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 16px;
+  background: var(--aica-bg);
+  border: 1px solid var(--aica-border);
+  box-shadow: var(--aica-shadow);
+
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+/* Wenn unten links, Panel passend verschieben */
+.aica-bottom-left .aica-window {
+  left: 0;
+  right: auto;
+}
+
+/* ---------------------------------------------------------------------------
+   Header (Titel, Clear, Close)
+   ------------------------------------------------------------------------ */
+.aica-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 .85rem;
+
+  background: var(--aica-bg);
+  border-bottom: 1px solid var(--aica-border);
+}
+
+.aica-title {
+  font-weight: 700;
+  font-size: .9rem;
+  color: var(--aica-text);
+}
+
+.aica-header-controls {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+}
+
+.aica-close,
+.aica-clear {
+  border: 0;
+  background: transparent;
+  color: var(--aica-text);
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .12s ease, transform .04s ease;
+}
+
+.aica-close:hover,
+.aica-clear:hover {
+  background: var(--aica-bg-soft);
+}
+
+.aica-close:active,
+.aica-clear:active {
+  transform: translateY(1px);
+}
+
+/* ---------------------------------------------------------------------------
+   Nachrichtenliste
+   ------------------------------------------------------------------------ */
+.aica-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: .8rem;
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  background: var(--aica-bg-soft);
+}
+
+/* „Tippen…“-Indikator */
+.aica-pending {
+  align-self: flex-start;
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: var(--aica-muted-text);
+}
+
+/* ---------------------------------------------------------------------------
+   Bubbles (User / Bot)
+   ------------------------------------------------------------------------ */
+.aica-bubble {
+  max-width: 85%;
+  display: flex;
+}
+
+.aica-bubble-inner {
+  padding: .45rem .7rem;
+  border-radius: 12px;
+  font-size: .85rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.aica-bubble-inner p:last-child {
+  margin-bottom: 0;
+}
+
+.aica-bubble-inner p {
+  margin: 0.25rem 0;
+}
+
+.aica-bubble-inner ul ol {
+  margin: 0.25rem 0;
+  padding-left: 1.2rem;
+}
+
+.aica-bubble-inner li {
+  margin: 0.15rem 0;
+}
+
+
+
+/* Nutzer-Bubble rechts, blau */
+.aica-bubble.from-user {
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+
+.aica-bubble.from-user .aica-bubble-inner {
+  background: var(--aica-primary);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+/* Bot-Bubble links, hell */
+.aica-bubble.from-bot {
+  align-self: flex-start;
+  justify-content: flex-start;
+}
+
+.aica-bubble.from-bot .aica-bubble-inner {
+  background: #fff;
+  color: var(--aica-text);
+  border: 1px solid color-mix(in oklab, var(--aica-border) 80%, transparent);
+  border-bottom-left-radius: 4px;
+}
+
+/* Fehler-Bubble */
+.aica-bubble.is-error .aica-bubble-inner {
+  border-color: #d9534f;
+  color: #d9534f;
+}
+
+/* Links im Bot-Text */
+.aica-bubble.from-bot .aica-link {
+  text-decoration: underline;
+  cursor: pointer;
+  border-bottom: 1px solid #147fc2;
+}
+
+/* ---------------------------------------------------------------------------
+   Eingabezeile (Form, Input, Send-Button)
+   ------------------------------------------------------------------------ */
+.aica-form {
+  display: flex;
+  align-items: center;
+  padding: .6rem .7rem;
+  gap: .5rem;
+  border-top: 1px solid var(--aica-border);
+  background: var(--aica-bg);
+}
+
+.aica-input {
+  flex: 1;
+  padding: .45rem .6rem;
+  border-radius: 8px;
+  border: 1px solid var(--aica-border);
+  font-size: .85rem;
+  color: var(--aica-text);
+  background: #fff;
+  line-height: 1.3;
+
+  min-height: 40px;      /* Startgröße */
+  max-height: 120px;     /* obere Grenze, optional */
+  overflow-y: auto;
+
+  resize: none;          /* verhindert manuelles Ziehen */
+}
+
+.aica-input::placeholder {
+  color: var(--aica-muted-text);
+}
+
+.aica-input:focus {
+  outline: none;
+  border-color: var(--aica-primary);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--aica-primary) 20%, transparent);
+}
+
+.aica-send {
+  height: 40px;
+  padding: 0 .95rem;
+  border-radius: 8px;
+  border: 1px solid var(--aica-primary);
+  background: var(--aica-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: filter .15s ease, transform .04s ease;
+}
+
+.aica-send:hover {
+  filter: brightness(1.04);
+}
+
+.aica-send:active {
+  transform: translateY(1px);
+}
+
+.aica-send:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------------------------
+   Produktlisten (kind: "product_list")
+   ------------------------------------------------------------------------ */
+.aica-product-list {
+  margin: .5rem 0 .75rem;
+  padding: .75rem .75rem .5rem;
+  border-radius: 10px;
+  background: var(--aica-bg-soft);
+  border: 1px solid var(--aica-border);
+}
+
+.aica-product-list-title {
+  font-size: .85rem;
+  font-weight: 600;
+  margin-bottom: .5rem;
+  color: var(--aica-text);
+}
+
+.aica-product-list-items {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .4rem;
+}
+
+/* einzelne Produktkarte */
+.aica-product-card {
+  display: flex;
+  flex-direction: column;
+  padding: .55rem .6rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in oklab, var(--aica-border) 80%, transparent);
+  background: #fff;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform .08s ease,
+    box-shadow .12s ease,
+    border-color .12s ease;
+}
+
+.aica-product-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--aica-primary);
+  box-shadow: 0 8px 18px rgba(20, 31, 51, 0.12);
+}
+
+.aica-product-name {
+  font-size: .85rem;
+  font-weight: 600;
+  margin-bottom: .2rem;
+}
+
+.aica-product-meta {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.aica-product-number {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.aica-product-unit {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.aica-product-price {
+  margin-left: auto;
+  display: inline-flex;
+  font-size: .85rem;
+  font-weight: 600;
+  color: #1d4ed8;
+  white-space: nowrap;
+  cursor: help;
+}
+
+.aica-product-price.is-standard-price {
+  color: #1d4ed8;
+}
+
+.aica-product-price.is-advanced-price {
+  color: #22c55e;
+}
+
+.aica-product-price[data-price-hint]::after {
+  content: attr(data-price-hint);
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  width: max-content;
+  max-width: 260px;
+  padding: .35rem .5rem;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.95);
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 400;
+  line-height: 1.3;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.2);
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity .12s ease, transform .12s ease;
+  z-index: 2;
+}
+
+.aica-product-price[data-price-hint]:hover::after,
+.aica-product-price[data-price-hint]:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------------------------------------------------------------------------
+   Info-Boxen (kind: "info_box")
+   ------------------------------------------------------------------------ */
+.aica-info-box {
+  margin: .5rem 0;
+  padding: .6rem .7rem;
+  border-radius: 8px;
+  border-left: 3px solid var(--aica-border);
+  background: var(--aica-bg-soft);
+  font-size: .8rem;
+}
+
+.aica-info-title {
+  font-weight: 600;
+  margin-bottom: .2rem;
+  color: var(--aica-text);
+}
+
+.aica-info-text {
+  line-height: 1.4;
+  color: var(--aica-text);
+}
+
+.aica-info-text p:last-child {
+  margin-bottom: 0;
+}
+
+.aica-info-text p {
+  margin: 0.25rem 0;
+}
+
+.aica-info-text ul ol {
+  margin: 0.25rem 0;
+  padding-left: 1.2rem;
+}
+
+.aica-info-text li {
+  margin: 0.15rem 0;
+}
+
+/* Varianten nach style: info | warning | error */
+.aica-info-info {
+  border-left-color: var(--aica-primary);
+}
+
+.aica-info-warning {
+  border-left-color: #f0ad4e;
+}
+
+.aica-info-error {
+  border-left-color: #d9534f;
+}
+
+/* ---------------------------------------------------------------------------
+   Formular (kind: "formular")
+   ------------------------------------------------------------------------ */
+.aica-formular {
+  border: 1px solid var(--aica-border);
+  border-radius: 10px;
+  margin: .6rem 0;
+  background: var(--aica-bg);
+}
+
+.aica-formular-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .55rem .7rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.aica-formular-toggle {
+  font-size: .8rem;
+  opacity: .7;
+}
+
+.aica-formular-body {
+  padding: .6rem .7rem;
+}
+
+.aica-formular-title {
+  font-size: .9rem;
+  font-weight: 700;
+  margin-bottom: .35rem;
+  color: var(--aica-text);
+}
+
+.aica-formular-reason {
+  font-size: .85rem;
+  color: var(--aica-muted-text);
+  margin-bottom: .5rem;
+}
+
+.aica-formular-reason p:last-child {
+  margin-bottom: 0;
+}
+
+.aica-formular-reason p {
+  margin: 0.25rem 0;
+}
+
+.aica-formular-reason ul ol {
+  margin: 0.25rem 0;
+  padding-left: 1.2rem;
+}
+
+.aica-formular-reason li {
+  margin: 0.15rem 0;
+}
+
+.aica-formular-text {
+  font-size: .82rem;
+  color: var(--aica-muted-text);
+  margin-bottom: .6rem;
+  line-height: 1.35;
+}
+
+.aica-formular-row {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  margin-bottom: .5rem;
+}
+
+.aica-formular-label {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--aica-text);
+}
+
+.aica-formular-input {
+  border-radius: 8px;
+  border: 1px solid var(--aica-border);
+  padding: .45rem .6rem;
+  font-size: .85rem;
+  color: var(--aica-text);
+  background: #fff;
+}
+
+.aica-formular-input:focus {
+  outline: none;
+  border-color: var(--aica-primary);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--aica-primary) 20%, transparent);
+}
+
+.aica-formular-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: .25rem;
+}
+
+.aica-formular-submit {
+  height: 38px;
+  padding: 0 .9rem;
+  border-radius: 8px;
+  border: 1px solid var(--aica-primary);
+  background: var(--aica-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: .82rem;
+  cursor: pointer;
+}
+
+.aica-formular.is-collapsed .aica-formular-body {
+  display: none;
+}
+
+.aica-formular.is-done .aica-formular-header {
+  opacity: .7;
+}
+

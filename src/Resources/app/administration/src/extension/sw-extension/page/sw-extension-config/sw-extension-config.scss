@@ -1,0 +1,20 @@
+.aica-config__content {
+    width: 100%;
+}
+
+.aica-config__content.is--boxed {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.aica-config__dashboard-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.aica-config__dashboard-link {
+    font-weight: 600;
+}

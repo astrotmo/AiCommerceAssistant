@@ -1,0 +1,112 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="AiCommerceAssistant\Core\Content\ChatSession\ChatSessionDefinition">
+            <tag name="shopware.entity.definition" entity="aica_chat_session"/>
+        </service>
+        <service id="AiCommerceAssistant\Core\Content\ChatMessage\ChatMessageDefinition">
+            <tag name="shopware.entity.definition" entity="aica_chat_message"/>
+        </service>
+        <service id="AiCommerceAssistant\Core\Content\ContactSubmission\ContactSubmissionDefinition">
+            <tag name="shopware.entity.definition" entity="aica_contact_submission"/>
+        </service>
+        <service id="AiCommerceAssistant\Core\Content\ProductReference\ProductReferenceDefinition">
+            <tag name="shopware.entity.definition" entity="aica_product_reference"/>
+        </service>
+
+        <service id="AiCommerceAssistant\Service\ChatSessionResolver"/>
+
+        <service id="AiCommerceAssistant\Setup\ContactMailTemplateSetup">
+            <argument type="service" id="mail_template_type.repository"/>
+            <argument type="service" id="mail_template.repository"/>
+            <argument type="service" id="language.repository"/>
+        </service>
+
+        <service id="AiCommerceAssistant\Service\ContactSubmissionMailService">
+            <argument type="service" id="Shopware\Core\Content\Mail\Service\MailService"/>
+            <argument type="service" id="mail_template.repository"/>
+            <argument type="service" id="mail_template_type.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="logger"/>
+        </service>
+
+        <service id="AiCommerceAssistant\Service\ChatAnalyticsService">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+        </service>
+
+        <service id="AiCommerceAssistant\Service\ChatTrackingService">
+            <argument type="service" id="aica_chat_session.repository"/>
+            <argument type="service" id="aica_chat_message.repository"/>
+            <argument type="service" id="aica_contact_submission.repository"/>
+            <argument type="service" id="aica_product_reference.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="AiCommerceAssistant\Service\ChatSessionResolver"/>
+            <argument>%kernel.secret%</argument>
+        </service>
+
+        <service id="AiCommerceAssistant\Subscriber\StorefrontSubscriber">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id ="AiCommerceAssistant\Storefront\Controller\ChatContextController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <argument>%env(string:CHAT_AUTH_SECRET)%</argument>
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="AiCommerceAssistant\Service\ChatSessionResolver"/>
+            <argument type="service" id="AiCommerceAssistant\Service\ChatTrackingService"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <service id="AiCommerceAssistant\Storefront\Controller\ChatTrackingController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <argument type="service" id="AiCommerceAssistant\Service\ChatTrackingService"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <service id="AiCommerceAssistant\Storefront\Controller\ChatProxyController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="Symfony\Contracts\HttpClient\HttpClientInterface"/>
+            <argument type="service" id="logger"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <service id="AiCommerceAssistant\Storefront\Controller\FormularController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <argument type="service" id="AiCommerceAssistant\Service\ContactSubmissionMailService"/>
+            <argument type="service" id="Shopware\Core\Framework\RateLimiter\RateLimiter"/>
+            <argument type="service" id="AiCommerceAssistant\Service\ChatTrackingService"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <service id="AiCommerceAssistant\Storefront\Controller\PricesController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <argument type="service" id="sales_channel.product.repository"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <service id="AiCommerceAssistant\Controller\Api\ChatAnalyticsController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <argument type="service" id="AiCommerceAssistant\Service\ChatAnalyticsService"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+    </services>
+</container>

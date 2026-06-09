@@ -1,0 +1,29 @@
+{# custom/plugins/AiCommerceAssistant/src/Resources/views/storefront/page/content/index.html.twig #}
+{% sw_extends '@Storefront/storefront/page/content/index.html.twig' %}
+
+{% block base_main_inner %}
+    {{ parent() }}
+
+    {% set aica = page.extensions.aica is defined ? page.extensions.aica : null %}
+    {% set aicaPriceVisibility = aica ? aica.productPriceVisibility : (config('AiCommerceAssistant.config.productPriceVisibility') ?: 'customers') %}
+    {% set aicaPriceMode = aica ? aica.productPriceMode : (config('AiCommerceAssistant.config.productPriceMode') ?: 'advanced-first') %}
+    {% set aicaShowPriceHint = aica ? aica.showProductPriceHint : (config('AiCommerceAssistant.config.showProductPriceHint') is not same as(false)) %}
+    {% set aicaCanShowPrices = aica ? aica.canShowProductPrices : (aicaPriceVisibility == 'all' or (aicaPriceVisibility == 'customers' and context.customer and not context.customer.guest)) %}
+
+    {# JS will inject the floating button & chat panel here. #}
+    <div aica-root
+     data-chat-url="{{ path('frontend.aica.chat')|e('html_attr') }}"
+     data-context-token-url="{{ path('frontend.aica.context_token')|e('html_attr') }}"
+     data-track-url="{{ path('frontend.aica.track')|e('html_attr') }}"
+     data-llm-model="{{ (config('AiCommerceAssistant.config.llmModel') ?? '')|e('html_attr') }}"
+     data-welcome-message="{{ (config('AiCommerceAssistant.config.welcomeMessage') ?? '')|e('html_attr') }}"
+     data-button-label="{{ (config('AiCommerceAssistant.config.buttonLabel') ?? '')|e('html_attr') }}"
+     data-auto-open="{{ config('AiCommerceAssistant.config.autoOpen') ? '1' : '0' }}"
+     data-position="{{ (config('AiCommerceAssistant.config.position') ?? 'bottom-right')|e('html_attr') }}"
+     data-debug-enabled="{{ config('AiCommerceAssistant.config.enableDebugMode') ? '1' : '0' }}"
+     data-product-price-visibility="{{ aicaPriceVisibility|e('html_attr') }}"
+     data-product-price-mode="{{ aicaPriceMode|e('html_attr') }}"
+     data-show-product-price-hint="{{ aicaShowPriceHint ? '1' : '0' }}"
+     data-can-show-product-prices="{{ aicaCanShowPrices ? '1' : '0' }}">
+</div>
+{% endblock %}
