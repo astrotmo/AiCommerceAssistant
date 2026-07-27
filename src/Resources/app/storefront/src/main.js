@@ -11,4 +11,4 @@
 import AicaPlugin from './plugin/aica.plugin';
 
 const PluginManager = window.PluginManager;
-PluginManager.register('AicaPlugin', AicaPlugin, '[aica-root]');
+PluginManager.register('AicaPlugin', AicaPlugin, '[data-aica-root]');

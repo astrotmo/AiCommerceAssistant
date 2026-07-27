@@ -26,7 +26,7 @@ flowchart LR
 
 ## Storefront widget
 
-The storefront integration is injected through `src/Resources/views/storefront/page/content/index.html.twig`. It renders an `aica-root` element with data attributes consumed by the storefront JavaScript plugin registered as `AicaPlugin`.
+The storefront integration is injected through `src/Resources/views/storefront/page/content/index.html.twig`. It renders a `data-aica-root` element with data attributes consumed by the storefront JavaScript plugin registered as `AicaPlugin`.
 
 The widget renders:
 

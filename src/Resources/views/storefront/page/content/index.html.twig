@@ -11,7 +11,7 @@
     {% set aicaCanShowPrices = aica ? aica.canShowProductPrices : (aicaPriceVisibility == 'all' or (aicaPriceVisibility == 'customers' and context.customer and not context.customer.guest)) %}
 
     {# JS will inject the floating button & chat panel here. #}
-    <div aica-root
+    <div data-aica-root
      data-chat-url="{{ path('frontend.aica.chat')|e('html_attr') }}"
      data-context-token-url="{{ path('frontend.aica.context_token')|e('html_attr') }}"
      data-track-url="{{ path('frontend.aica.track')|e('html_attr') }}"

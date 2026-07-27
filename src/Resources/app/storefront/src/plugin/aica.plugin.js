@@ -294,7 +294,7 @@ export default class AicaPlugin extends Base {
         // Anchor everything in the wrapper
         wrapper.appendChild(fab);
         wrapper.appendChild(panel);
-        document.body.appendChild(wrapper);
+        this.el.appendChild(wrapper);
 
         // Show hint for contact form for not logged in users
         this.showContactFormHint();
