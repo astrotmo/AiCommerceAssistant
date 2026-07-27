@@ -16,6 +16,7 @@ AICA is a Shopware 6 storefront plugin that integrates an AI-based commerce assi
 ## Architecture
 
 The browser calls Shopware storefront routes under `/aica/...`. Shopware validates and enriches requests, forwards chat payloads to an external AI backend configured through the plugin settings, and handles price lookup, contact mails, tracking, persistence, and administration analytics locally.
+This plugin depends on a separate backend service orchestrating the answer generation process by a local LLM. It can be found [here](https://github.com/astrotmo/shopware-ai-chat-backend).
 
 See [docs/architecture.md](docs/architecture.md) for a fuller implementation overview.
 
