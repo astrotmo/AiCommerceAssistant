@@ -12,6 +12,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Enriches at most 50 valid Shopware product UUIDs with sales-channel prices.
+ *
+ * The route requires `X-Requested-With: XMLHttpRequest` and `X-AICA: 1`. Visibility
+ * is enforced server-side from `productPriceVisibility`: `none` returns 403,
+ * `customers` requires a customer on the sales-channel context, and `all` is public.
+ *
+ * Request: `{productIds: string[]}`. Response: `{prices: {[productId]: {
+ * name, calculatedPrice, calculatedPrices, hasAdvancedPrices, currency}}}`.
+ */
 class PricesController extends StorefrontController
 {
     private const MAX_PRODUCT_IDS = 50;

@@ -9,6 +9,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Accepts widget analytics events marked with the two trusted-AJAX headers.
+ *
+ * `message` events accept the client tracking envelope consumed by
+ * ChatTrackingService (role/text/payload, indexes, metrics, flags, and product
+ * references). `contact_form_shown` carries no additional required fields.
+ */
 class ChatTrackingController extends StorefrontController
 {
     public function __construct(
@@ -22,6 +29,9 @@ class ChatTrackingController extends StorefrontController
         methods: ['POST'],
         defaults: ['XmlHttpRequest' => true, '_routeScope' => ['storefront']],
     )]
+    /**
+     * @return JsonResponse JSON `{success, event?, messageId?, error?}`
+     */
     public function track(Request $request, SalesChannelContext $salesChannelContext): JsonResponse
     {
         if (!$this->isTrustedAjaxRequest($request)) {

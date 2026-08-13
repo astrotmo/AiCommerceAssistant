@@ -14,6 +14,11 @@ class Migration1781000000CreateAicaPersistence extends MigrationStep
 
     public function update(Connection $connection): void
     {
+        /*
+         * Relationship policy: session deletion cascades messages, but preserves
+         * contact submissions and session-level product references via nullable FKs.
+         * Message deletion cascades its product references.
+         */
         $connection->executeStatement('
             CREATE TABLE IF NOT EXISTS `aica_chat_session` (
                 `id` BINARY(16) NOT NULL,

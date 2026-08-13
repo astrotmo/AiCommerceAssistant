@@ -1,5 +1,11 @@
 const ApiService = Shopware.Classes.ApiService;
 
+/**
+ * Thin client for the six `/api/_action/aica/dashboard/...` actions.
+ *
+ * Date payloads use `{ from, to }`; exports return blobs while overview/deletion
+ * unwrap standard API responses. Shopware enforces each action's ACL server-side.
+ */
 class AicaDashboardApiService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'aica/dashboard') {
         super(httpClient, loginService, apiEndpoint);

@@ -13,6 +13,26 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Normalizes storefront analytics events into the four AICA DAL entities.
+ *
+ * Privacy/storage contract:
+ * - normalized message text, selected rendered blocks/metadata, contact data, and the
+ *   stable storefront session identifier are stored independently of debug mode;
+ * - sessions without a customer id receive salted SHA-256 IP/user-agent/fingerprint
+ *   values, while any context with a customer id (including guest-checkout customers)
+ *   is linked by that id;
+ * - linking that same session to a customer later does not clear guest hashes or raw
+ *   identifiers captured by an earlier anonymous upsert;
+ * - raw IP storage requires debug mode plus `storeRawIpAddress`;
+ * - raw user-agent storage requires debug mode;
+ * - the complete structured backend payload requires debug mode plus
+ *   `storeRawDebugPayloads`.
+ *
+ * The `%kernel.secret%` value injected as `$hashSalt` makes guest hashes installation
+ * specific. Controllers treat session/contact tracking as best-effort, but direct
+ * message-event calls can surface repository failures to the tracking endpoint.
+ */
 class ChatTrackingService
 {
     private const CONFIG_DEBUG_MODE = 'AiCommerceAssistant.config.enableDebugMode';
@@ -71,6 +91,8 @@ class ChatTrackingService
         $guestFingerprintHash = null;
 
         // For guests, we persist only hashed identifiers outside debug mode.
+        // A later customer-linked upsert omits these keys rather than clearing
+        // values already captured for the same storefront session.
         if ($customerId === null) {
             $hashedIp = $this->hashValue($rawIp);
             $hashedUserAgent = $this->hashValue($userAgentRaw);
@@ -148,6 +170,11 @@ class ChatTrackingService
 
     /**
      * @param array<string, mixed> $eventPayload
+     *
+     * Recognized envelope fields include `payload`, `role`, `messageIndex`,
+     * `messageType`, `text`, string-valued `requestId`, `model`, `tokenUsage`/`usage`,
+     * `latencyMs`, `flags`, and `productReferences`.
+     * The widget's numeric request ID therefore does not survive normalization.
      */
     public function trackMessageEvent(SalesChannelContext $salesChannelContext, Request $request, array $eventPayload): ?string
     {

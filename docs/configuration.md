@@ -118,13 +118,15 @@ If empty, Shopware mail defaults apply.
 
 ### `AiCommerceAssistant.config.enableDebugMode`
 
-Enables storefront console logs and gates the optional raw debug storage settings below.
+Enables storefront console logs and gates the optional raw debug storage settings below. The console output can include request history, the short-lived context token, and complete backend responses, so it should not be left enabled on shared or production browsers.
+
+When enabled, the tracking service may also store the raw user-agent string. Raw IP storage and the full assistant debug payload remain controlled by their separate settings below.
 
 Default: `false`
 
 ### `AiCommerceAssistant.config.storeRawDebugPayloads`
 
-Stores full request and response debug payloads while debug mode is enabled.
+Stores the complete structured assistant payload supplied by storefront tracking while debug mode is enabled. It does not store a second copy of the complete browser request. Independently of this setting, normal tracking stores message text and a selected rendered response containing supported blocks and metadata.
 
 Default: `false`
 
@@ -137,6 +139,12 @@ Stores raw IP addresses while debug mode is enabled.
 Default: `false`
 
 Keep this disabled unless raw IPs are explicitly needed for short-term troubleshooting.
+
+## Tracking data that is not debug-only
+
+The debug settings do not enable or disable AICA analytics as a whole. When browser events or validated, non-honeypot contact submissions are successfully persisted, records can include normalized user/assistant text, selected structured blocks, session/customer relationships, product references, contact data, and available latency/model metadata. Browser tracking and controller-side contact persistence are best-effort, so delivery or repository failures can leave gaps. Guest IP and user-agent values are salted and hashed outside debug mode.
+
+There is currently no automatic retention job. Administration users with the required ACL can delete sessions or contact submissions by date range; clearing browser history affects only the current tab's `sessionStorage`.
 
 ### `AiCommerceAssistant.config.debugLogContactSubmissions`
 

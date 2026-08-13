@@ -33,6 +33,7 @@
                  class="aica-message-renderer__block"
                  :class="`is-${block.kind || 'unknown'}`">
 
+                {# Conversation text uses v-text/interpolation only; no tracked HTML is executed. #}
                 <template v-if="block.kind === 'text'">
                     <p class="aica-message-renderer__text" v-text="renderPlainText(block.text)"></p>
                 </template>

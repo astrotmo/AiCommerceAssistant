@@ -4,6 +4,20 @@ namespace AiCommerceAssistant\Service;
 
 use Doctrine\DBAL\Connection;
 
+/**
+ * Read/export/delete queries backing the Administration analytics module.
+ *
+ * Overview and session export count sessions with a message in the requested range
+ * (plus zero-message sessions created in range); message/contact metrics use each
+ * record's `created_at`. Session deletion intentionally uses the session's own
+ * `created_at`, so its range semantics differ from overview/export. Deleting a session
+ * cascades messages, unlinks contact submissions, and explicitly removes nullable
+ * product references.
+ *
+ * Session/contact CSV exports join customer name/email and therefore contain personal
+ * data. Values are passed directly to `fputcsv`; spreadsheet formula prefixes are not
+ * neutralized. API controllers protect these actions with Shopware ACL privileges.
+ */
 class ChatAnalyticsService
 {
     private const DEFAULT_TOP_LIMIT = 10;
@@ -120,6 +134,7 @@ class ChatAnalyticsService
 
     public function exportSessionsCsv(\DateTimeImmutable $from, \DateTimeImmutable $to): string
     {
+        // CSV output starts with a UTF-8 BOM for spreadsheet compatibility.
         $headers = [
             'id' => 'Session ID',
             'createdAt' => 'Created At',

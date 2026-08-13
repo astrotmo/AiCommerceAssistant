@@ -45,6 +45,7 @@
             <argument type="service" id="aica_product_reference.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="AiCommerceAssistant\Service\ChatSessionResolver"/>
+            <!-- Installation-keyed salt for one-way pseudonymous guest identifier hashes. -->
             <argument>%kernel.secret%</argument>
         </service>
 
@@ -57,6 +58,7 @@
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
+            <!-- Shopware signs the short-lived context JWT; the current backend does not validate it. -->
             <argument>%env(string:CHAT_AUTH_SECRET)%</argument>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="AiCommerceAssistant\Service\ChatSessionResolver"/>

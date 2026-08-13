@@ -22,8 +22,13 @@ use Symfony\Component\Routing\Attribute\Route;
 /**
  * Class ChatContextController
  *
- * This controller provides an endpoint to generate a context token for the AICA - AI Commerce Assistant.
- * The token is a JWT that includes information about the customer and sales channel.
+ * Issues a short-lived, pseudonymous HS256 JWT for the external chat backend.
+ *
+ * The claims are limited to the storefront session identifier (`sid`), sales channel,
+ * issue/expiry timestamps, and a random token id. Customer ids and login state are
+ * deliberately excluded. The stable `sid` can still link the token to a persisted
+ * Shopware session/customer. Callers must send both `X-Requested-With:
+ * XMLHttpRequest` and `X-AICA: 1`; successful responses are explicitly non-cacheable.
  *
  * @author Paul Nöth
  * @package AiCommerceAssistant\Storefront\Controller
@@ -63,7 +68,7 @@ class ChatContextController extends StorefrontController
      * Generates and returns a context token for the AICA - AI Commerce Assistant.
      * 
      * @param SalesChannelContext $context The sales channel context containing customer and sales channel information.
-     * @return JsonResponse A JSON response containing the generated context token.
+     * @return JsonResponse JSON `{token: string}` or `{error: string}`
      */
     public function contextToken(SalesChannelContext $context): JsonResponse
     {
@@ -72,7 +77,8 @@ class ChatContextController extends StorefrontController
             return new JsonResponse(['error' => 'UNTRUSTED_REQUEST'], 400);
         }
 
-        // Secret shared with Python backend (set it as env var in Shopware container)
+        // Shopware requires a signing key even though the current Python backend
+        // treats the resulting client token as opaque and does not verify it.
         $secret = trim($this->chatAuthSecret);
         if ($secret === '') {
             return new JsonResponse(['error' => 'CHAT_AUTH_SECRET not configured'], 500);
@@ -114,7 +120,7 @@ class ChatContextController extends StorefrontController
     /**
      * Signs the given payload to create a JWT token.
      *
-     * @param array $payload The payload data to include in the token.
+     * @param array{sid: string, salesChannelId: string, iat: int, exp: int, jti: string} $payload
      * @param string $secret The secret key used to sign the token.
      * @return string The signed JWT token.
      */

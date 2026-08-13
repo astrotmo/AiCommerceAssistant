@@ -10,7 +10,11 @@
     {% set aicaShowPriceHint = aica ? aica.showProductPriceHint : (config('AiCommerceAssistant.config.showProductPriceHint') is not same as(false)) %}
     {% set aicaCanShowPrices = aica ? aica.canShowProductPrices : (aicaPriceVisibility == 'all' or (aicaPriceVisibility == 'customers' and context.customer and not context.customer.guest)) %}
 
-    {# JS will inject the floating button & chat panel here. #}
+    {#
+        JS injects the floating button and panel here. The server-rendered price capability
+        guides the client; `/aica/prices` independently applies its configured customer check.
+        Route URLs remain same-origin Shopware endpoints rather than the external backend.
+    #}
     <div data-aica-root
      data-chat-url="{{ path('frontend.aica.chat')|e('html_attr') }}"
      data-context-token-url="{{ path('frontend.aica.context_token')|e('html_attr') }}"

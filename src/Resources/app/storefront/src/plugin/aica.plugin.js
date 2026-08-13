@@ -296,7 +296,7 @@ export default class AicaPlugin extends Base {
         wrapper.appendChild(panel);
         this.el.appendChild(wrapper);
 
-        // Show hint for contact form for not logged in users
+        // Show the one-time contact handoff hint for every widget instance.
         this.showContactFormHint();
         
         // Append welcome message from bot
@@ -430,7 +430,7 @@ export default class AicaPlugin extends Base {
     /** CHAT REQUEST FLOW */
 
     /**
-     * Handles form submission: sends user message to backend and processes response.
+     * Handles form submission through the Shopware chat proxy and processes its response.
      * 
      * @param {Event} e The submit event.
      */
@@ -485,6 +485,11 @@ export default class AicaPlugin extends Base {
     }
 
     async processChatRequest({ requestId, message, history, client }) {
+        /*
+         * Public browser/backend envelope: requestId, message, configured model,
+         * bounded `{role, content}` history, and client origin/base-path plus the
+         * short-lived pseudonymous context JWT. The Shopware proxy forwards this JSON.
+         */
         const pending = this.appendPending();
         const startedAt = performance.now();
 
@@ -662,9 +667,18 @@ export default class AicaPlugin extends Base {
      * Renders a product list as tiles (kind: "product_list").
      * Expected:
      * {
-     *   title: "string",
-     *   products: [{ id, name, detailUrl, price?, currency? }, ...]
+     *   title?: string,
+     *   products: [{
+     *     id: string,
+     *     name: string,
+     *     productNumber?: string,
+     *     purchaseUnit?: string,
+     *     unitShortCode?: string,
+     *     price?: string
+     *   }, ...]
      * }
+     * The renderer requires `id` and `name`, builds `/detail/{id}` itself, and
+     * replaces a display-eligible backend price only when Shopware enrichment succeeds.
      * 
      * @param {Object} block The product list block.
      */
@@ -892,12 +906,13 @@ export default class AicaPlugin extends Base {
      * Renders a contact form (kind: "formular").
      * Expected:
      * {
-     *   title: "string",
-     *   text: "string",
-     *   fields: [{ name, label, type, placeholder, required, options? }, ...],
-     *   submitLabel: "string",
-     *   contactUrl: "string" (optional URL to open on submit)
+     *   title?: string,
+     *   reason?: string,
+     *   fields: [{ key, label, type, placeholder?, required?, value? }, ...],
+     *   submitLabel?: string
      * }
+     * Submission always uses the hard-coded Shopware `/aica/contact` route;
+     * block-provided endpoint/method values are not part of the renderer contract.
      * 
      * @param {Object} block The formular block.
      */
@@ -1028,7 +1043,7 @@ export default class AicaPlugin extends Base {
         }
     }
 
-    /** CONTEXT / BACKEND HELPERS */
+    /** CONTEXT / REQUEST HELPERS */
 
     /**
      * Gathers client context information for requests.
@@ -1049,7 +1064,7 @@ export default class AicaPlugin extends Base {
     }
 
     /**
-     * Retrieves a context token from the backend.
+     * Retrieves a context token from the Shopware context-token controller.
      * Caches it until shortly before expiration.
      * 
      * @param {string} contextTokenUrl The URL to fetch the context token.
@@ -1111,7 +1126,9 @@ export default class AicaPlugin extends Base {
 
     /**
      * Fetch calculated prices for product IDs from the Shopware plugin endpoint.
-     * Only works for logged-in users (endpoint should return 401 otherwise).
+     * The endpoint applies `none`, `customers`, or `all` visibility: disabled
+     * pricing returns 403, while customer-only pricing returns 401 without a
+     * customer in the active sales-channel context.
      *
      * @param {string[]} productIds
      * @returns {Promise<Record<string, Object>>} Mapping of productId to price info.
@@ -1181,6 +1198,7 @@ export default class AicaPlugin extends Base {
     trackEvent(eventPayload) {
         if (!this.trackEndpoint || !eventPayload || typeof eventPayload !== 'object') return;
 
+        // Fire-and-forget by design: analytics must not block the visible chat flow.
         const payload = { ...eventPayload };
 
         fetch(this.trackEndpoint, {
@@ -1391,6 +1409,7 @@ export default class AicaPlugin extends Base {
      * @param {Object} m The message object to persist.
      */
     persistMessage(m) {
+        // Browser history is tab-scoped and bounded; server-side tracking is separate.
         const key = this.storageKey();
         const arr = this.readJson(key) || [];
         arr.push({ ...m, ts: Date.now() });
@@ -1575,7 +1594,7 @@ export default class AicaPlugin extends Base {
     /** CONTACT FORM HELPER */
 
     /**
-     * Shows a hint to the user about the contact form if they are not logged in.
+     * Shows the contact-handoff hint once; this helper performs no login check.
      * @returns {void}
      */
     showContactFormHint() {
@@ -1593,7 +1612,7 @@ export default class AicaPlugin extends Base {
     }
 
     /**
-     * Submits the contact form data to the backend.
+     * Submits contact form data to the Shopware `/aica/contact` controller.
      * @param {HTMLFormElement} form The contact form element.
      * @returns {Promise<boolean>} True if submission was successful, false otherwise.
      */

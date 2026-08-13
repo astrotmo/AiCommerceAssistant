@@ -14,6 +14,15 @@ use Symfony\Contracts\HttpClient\Exception\TimeoutExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * Same-origin JSON proxy between the storefront widget and the configured AI backend.
+ *
+ * After trimming outer whitespace, the browser payload is forwarded after checking
+ * that it decodes to a JSON object/array. The proxy adds JSON accept/content headers
+ * and `X-AICA-Proxy: 1`, but forwards no browser cookies or authentication headers.
+ * Upstream status, body, and the first Content-Type value are returned unchanged and
+ * marked `no-store`.
+ */
 class ChatProxyController extends StorefrontController
 {
     private const DEFAULT_BACKEND_CHAT_PATH = '/chat';
@@ -33,6 +42,9 @@ class ChatProxyController extends StorefrontController
         methods: ['POST'],
         defaults: ['XmlHttpRequest' => true, '_routeScope' => ['storefront']],
     )]
+    /**
+     * @return Response Upstream response, or JSON `{error: string}` for proxy failures
+     */
     public function chat(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         $rawPayload = trim((string) $request->getContent());
@@ -137,6 +149,7 @@ class ChatProxyController extends StorefrontController
 
     private function normalizeBackendUrl(string $configuredUrl): ?string
     {
+        // A bare host gets HTTP; a base URL with no path gets the backend's `/chat` path.
         $candidate = trim($configuredUrl);
         if ($candidate === '') {
             return null;

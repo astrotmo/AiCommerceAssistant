@@ -93,6 +93,7 @@ The corresponding system config keys use the `AiCommerceAssistant.config.*` doma
 - [Installation](docs/installation.md)
 - [Configuration](docs/configuration.md)
 - [Architecture](docs/architecture.md)
+- [Architecture analysis and recommendations](docs/architecture-analysis-and-recommendations.md)
 - [Development](docs/development.md)
 - [Troubleshooting](docs/troubleshooting.md)
 

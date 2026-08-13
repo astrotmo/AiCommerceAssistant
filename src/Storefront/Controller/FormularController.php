@@ -22,7 +22,14 @@ use Symfony\Component\Routing\Attribute\Route;
 /**
  * Class FormularController
  *
- * This controller handles the contact form submissions for AICA - AI Commerce Assistant.
+ * Handles JSON or form-encoded contact submissions from the storefront widget.
+ *
+ * Accepted fields are `name`, `email`, `phone`, `company`, `message`, `productRef`,
+ * `quantity`, `deliveryZip`, `sourceContext` (or input alias `reason`), and the
+ * `website` honeypot. Both trusted-AJAX headers are required. Valid submissions are
+ * rate-limited by normalized email plus client IP. Mail delivery and analytics
+ * persistence are best-effort: a validated request still returns `success: true`,
+ * with optional `internalMailStatus`/`confirmationMailStatus`, when delivery fails.
  */
 class FormularController extends AbstractController
 {
@@ -57,6 +64,10 @@ class FormularController extends AbstractController
         methods: ['POST'],
         defaults: ['XmlHttpRequest' => true, '_routeScope' => ['storefront']],
     )]
+    /**
+     * @return JsonResponse JSON `{success: bool, error?: string, retryAfter?: int,
+     *     internalMailStatus?: string, confirmationMailStatus?: string}`
+     */
     public function send(Request $request, SalesChannelContext $salesChannelContext): JsonResponse
     {
         if (!$this->isTrustedAjaxRequest($request)) {
