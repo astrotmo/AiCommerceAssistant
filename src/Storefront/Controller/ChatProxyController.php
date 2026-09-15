@@ -14,6 +14,8 @@ use Symfony\Contracts\HttpClient\Exception\TimeoutExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+use AiCommerceAssistant\Service\ServiceTokenFactory;
+
 /**
  * Same-origin JSON proxy between the storefront widget and the configured AI backend.
  *
@@ -33,6 +35,7 @@ class ChatProxyController extends StorefrontController
         private readonly SystemConfigService $systemConfigService,
         private readonly HttpClientInterface $httpClient,
         private readonly LoggerInterface $logger,
+        private readonly ServiceTokenFactory $serviceTokenFactory,
     ) {
     }
 
@@ -70,6 +73,7 @@ class ChatProxyController extends StorefrontController
 
         try {
             $upstreamResponse = $this->httpClient->request('POST', $backendUrl, [
+                'auth_bearer' => $this->serviceTokenFactory->create(),
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
@@ -78,12 +82,28 @@ class ChatProxyController extends StorefrontController
                 'body' => $rawPayload,
                 'timeout' => self::UPSTREAM_TIMEOUT_SECONDS,
                 'max_duration' => self::UPSTREAM_TIMEOUT_SECONDS,
+                'max_redirects' => '0',
             ]);
 
             $statusCode = $upstreamResponse->getStatusCode();
             $upstreamBody = $upstreamResponse->getContent(false);
             $upstreamHeaders = $upstreamResponse->getHeaders(false);
             $contentType = $upstreamHeaders['content-type'][0] ?? 'application/json';
+
+            if (\in_array($statusCode, [401, 403], true)) {
+                $this->logger->error(
+                    'AICA backend rejected service authentication.',
+                    ['statusCode' => $statusCode]
+                );
+
+                $response = new JsonResponse(
+                    ['error' => 'CHAT_BACKEND_AUTH_FAILED'],
+                    502
+                );
+                $response->headers->set('Cache-Control', 'no-store');
+
+                return $response;
+            }
 
             if ($statusCode >= 400) {
                 $this->logger->warning('AICA proxy received non-success backend response.', [

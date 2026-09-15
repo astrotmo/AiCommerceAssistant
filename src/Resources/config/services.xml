@@ -49,6 +49,10 @@
             <argument>%kernel.secret%</argument>
         </service>
 
+        <service id="AiCommerceAssistant\Service\ServiceTokenFactory">
+            <argument>%env(string:AICA_BACKEND_SECRET)%</argument>
+        </service>
+
         <service id="AiCommerceAssistant\Subscriber\StorefrontSubscriber">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <tag name="kernel.event_subscriber" />
@@ -80,6 +84,7 @@
             </call>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="Symfony\Contracts\HttpClient\HttpClientInterface"/>
+            <argument type="service" id="AiCommerceAssistant\Service\ServiceTokenFactory"/>
             <argument type="service" id="logger"/>
             <tag name="controller.service_arguments"/>
         </service>
