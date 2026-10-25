@@ -102,3 +102,7 @@ Additional generated reference files may exist in `docs/` depending on the repos
 ## License
 
 AICA is released under the [MIT License](LICENSE).
+
+## Versionierte Pakete
+
+Release-Hinweise, Build und manuelle Schritte: [docs/release.md](docs/release.md).

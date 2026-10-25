@@ -10,3 +10,8 @@
 !/docs/*.md
 
 phpunit.xml
+/dist/
+.env
+.env.*
+.phpunit.cache/
+__pycache__/

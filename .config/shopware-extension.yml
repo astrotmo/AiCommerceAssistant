@@ -1,0 +1,6 @@
+build:
+  shopwareVersionConstraint: "6.7.3.1"
+  zip:
+    assets:
+      enabled: true
+      enable_asset_caching: false
